@@ -1,78 +1,50 @@
-**Comportamento Esperado**
+# 🧪 Planejamento de Testes – Race Condition no Zephyr RTOS
 
-Saída Serial: Mensagens de erro mostrando dados corrompidos
+Este documento descreve três casos de teste para analisar e visualizar **condições de corrida (race conditions)** no acesso a um recurso compartilhado (`shared_sensor_data`) por múltiplas threads em um sistema Zephyr RTOS rodando na placa **FRDM-KL25Z**.
 
-LEDs: Piscam todos simultaneamente indicando estado de erro
+---
 
-Comportamento: Timestamps inconsistentes, sequências quebradas
+## 🔧 Contexto
 
+O código em teste cria **3 threads concorrentes** que acessam uma estrutura global de dados do sensor **sem mecanismos de sincronização**, resultando em comportamento inconsistente e possível corrupção de dados.
 
-**Análise do Problema**
+O objetivo dos testes é:
+- Identificar visualmente e via logs a ocorrência de race conditions.
+- Analisar o impacto da variação de carga no sistema.
+- Verificar a correção com uso de mutex.
 
-O código demonstra um cenário real de sistema embarcado onde:
+---
 
-Múltiplas threads acessam um periférico compartilhado (sensor I2C)
+## 🧩 Planejamento de Testes
 
-Operações não atômicas são interrompidas por mudanças de contexto
+| **Caso de Teste** | **Pré-condição** | **Etapas de Teste** | **Pós-condição Esperada** |
+|--------------------|------------------|----------------------|----------------------------|
+| **1. Execução Normal sem Sincronização (Race Condition visível)** | - Código `main.c` compilado e gravado com sucesso na placa FRDM-KL25Z.<br>- Placa energizada via USB e conectada ao terminal serial (115200 baud).<br>- Nenhum periférico adicional conectado. | 1. Executar o firmware na placa.<br>2. Observar os três LEDs (vermelho, verde e azul) durante 30 segundos.<br>3. Acompanhar as mensagens no terminal serial.<br>4. Identificar mensagens de inicialização duplicadas e erros “RACE CONDITION”.<br>5. Verificar se, ao final, todos os LEDs piscam simultaneamente. | - LEDs acendem de forma aleatória, sem padrão fixo.<br>- Mensagens “RACE CONDITION!” aparecem no terminal.<br>- Valor de timestamp inconsistente entre threads.<br>- Ao final, os três LEDs piscam juntos (500 ms ligados / 500 ms desligados).<br>- Sistema reporta “SIM - SISTEMA INCONSISTENTE!”. |
+| **2. Variação de Carga (Teste de Estresse de Race Condition)** | - Mesmo ambiente e firmware do Caso 1.<br>- A placa permanece conectada ao terminal serial.<br>- Adicionar tarefas externas de carga (ex: envio de logs contínuos via `printk()`). | 1. Modificar temporariamente a função `sensor_operation_critical()` adicionando `k_sleep(K_MSEC(2))` extras em pontos diferentes.<br>2. Recompilar e gravar novamente.<br>3. Observar se a frequência e a quantidade de mensagens “RACE CONDITION” aumentam.<br>4. Analisar a estabilidade do LED durante maior carga. | - A interferência entre threads se torna mais evidente.<br>- Maior frequência de mensagens “RACE CONDITION!”.<br>- LEDs mudam de estado de forma ainda mais irregular.<br>- Sistema entra em estado de erro (todos os LEDs piscando). |
+| **3. Comparação com Controle de Concorrência (Teste de Correção)** | - Adicionar mutex (`K_MUTEX_DEFINE(sensor_mutex)`) ao código e proteger o acesso ao `shared_sensor_data`.<br>- Firmware recompilado e gravado na placa.<br>- Mesmo ambiente dos testes anteriores. | 1. Executar o firmware com o mutex ativo.<br>2. Observar o comportamento dos LEDs por 30 segundos.<br>3. Verificar a saída no terminal serial.<br>4. Comparar com o comportamento do Caso 1. | - Mensagens “RACE CONDITION” **não aparecem** no terminal.<br>- Dados do sensor são consistentes (timestamps corretos).<br>- LEDs acendem e apagam conforme o esperado para cada thread, sem interferência.<br>- Mensagem final: “Sistema operou corretamente (sem inconsistências)”. |
 
-Delays não determinísticos exacerbam o problema
+---
 
-Dados críticos são corrompidos sem sincronização adequada
+## 🧠 Resumo
 
+| **Objetivo do Caso** | **Resultado Esperado** |
+|-----------------------|------------------------|
+| Identificar a race condition | Erros e inconsistência de dados |
+| Aumentar a carga e observar o agravamento | Mais erros e instabilidade |
+| Corrigir com sincronização (mutex) | Sistema consistente e estável |
 
+---
 
-**Comportamento Observado:**
+## 📋 Observações
 
-*** Demonstração Race Condition - Zephyr RTOS 4.2 - FRDM-KL25Z ***
-3 threads acessando recurso compartilhado SEM sincronização
+- Os testes devem ser realizados com **logs seriais habilitados** via `printk()`.
+- Recomenda-se utilizar um **terminal serial** (como PuTTY ou minicom) para análise dos logs.
+- O **comportamento dos LEDs** serve como indicador visual de race conditions e erros de sincronização.
 
-Thread 1: Inicializando sensor
-Thread 2: *** RACE CONDITION! Esperado: 2001, Recebido: 1001
-Thread 3: *** RACE CONDITION! Esperado: 3001, Recebido: 1001
-Thread 1: Leitura OK - timestamp: 1001, temp: 21°C, seq: 3
-Thread 2: *** RACE CONDITION! Esperado: 2101, Recebido: 1101
+---
 
+## 💡 Conclusão
 
-**Análise Técnica dos Problemas:**
-1. Corrupção de Dados de Timestamp:
-Thread 1 define timestamp = 1001
+Esses testes permitem demonstrar, de forma prática e visual, o impacto da ausência de sincronização em sistemas embarcados multitarefa e como o uso de **mutexes** elimina a condição de corrida, garantindo integridade dos dados e estabilidade do sistema.
 
-Thread 2 é agendada e sobrescreve com timestamp = 2001
-
-Thread 1 retorna e encontra 2001 em vez do esperado 1001
-
-Resultado: Dados de temporalidade completamente inválidos
-
-2. Sequência de Operações Quebrada:
-// Operação corrompida:
-Thread 1: shared_sensor_data.timestamp = 1001;  // Executa
-// ↓ Context switch para Thread 2
-Thread 2: shared_sensor_data.timestamp = 2001;  // Executa  
-Thread 2: shared_sensor_data.temperature = 22;  // Executa
-// ↓ Context switch de volta para Thread 1
-Thread 1: shared_sensor_data.temperature = 21;  // CORROMPE!
-Thread 1: shared_sensor_data.sequence++;        // Seq = 1
-Resultado: Temperatura da Thread 1 (21°C) com timestamp da Thread 2 (2001)
-
-3. Contador de Sequência Inconsistente:
-Cada thread incrementa sequence++, mas sem atomicidade
-
-Valor final esperado: 15 (3 threads × 5 operações)
-
-Valor real obtido: Pode ser qualquer valor entre 5-15 devido a sobrescritas
-
-4. Inicialização Múltipla:
-if (!shared_sensor_data.initialized) {
-    k_sleep(K_MSEC(1));  // ← Race condition aqui!
-    shared_sensor_data.initialized = true;
-}
-
-Múltiplas threads podem entrar no if simultaneamente
-Re-inicializam o sensor repetidamente
-
-**Indicadores Visuais (LEDs):**
-LEDs 0, 1, 2: Acendem aleatoriamente indicando acesso concorrente
-
-Todos LEDs piscando: Estado de erro crítico permanente
-
-Feedback visual: Mostra a natureza não determinística do problema
+---
