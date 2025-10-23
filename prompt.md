@@ -81,4 +81,3 @@ west flash
 Instruções para monitorar via serial (115200 baud):
 ```bash
 picocom -b 115200 /dev/ttyACM0
-```
