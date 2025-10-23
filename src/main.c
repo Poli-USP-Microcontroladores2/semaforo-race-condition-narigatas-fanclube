@@ -1,86 +1,90 @@
 #include <zephyr/kernel.h>
-#include <zephyr/drivers/gpio.h>
 #include <zephyr/sys/printk.h>
-#include <zephyr/device.h>
+#include <zephyr/logging/log.h>
 
-// --- Configuração de LEDs via DeviceTree ---
-#define LED_A_NODE DT_ALIAS(led0)  // LED verde
-#define LED_B_NODE DT_ALIAS(led2)  // LED vermelho
+/* Registro do módulo de log (permite usar LOG_INF com timestamp) */
+LOG_MODULE_REGISTER(race_demo, LOG_LEVEL_INF);
 
-static const struct gpio_dt_spec ledA = GPIO_DT_SPEC_GET(LED_A_NODE, gpios);
-static const struct gpio_dt_spec ledB = GPIO_DT_SPEC_GET(LED_B_NODE, gpios);
+/* Prioridades e tamanho das pilhas das threads */
+#define PRIO_THREAD_A 5
+#define PRIO_THREAD_B 6
+#define STACK_SIZE 512
 
-// --- Prioridades e tempos ---
-#define PRIO_THREAD_A 5   // Maior prioridade (número menor)
-#define PRIO_THREAD_B 7   // Menor prioridade
-#define TEMPO_A_MS   1500   // Thread A dorme
-#define TEMPO_B_MS   1000   // Thread B dorme
+/* Variável global compartilhada (sem proteção) */
+static volatile int shared_counter = 0;
 
-// ----------------------------------------------------
-// THREAD A — Tarefa curta, alta prioridade
-// ----------------------------------------------------
-void thread_A(void *p1, void *p2, void *p3)
+/*
+ * Função de incremento insegura:
+ * 1. Lê o valor atual da variável compartilhada.
+ * 2. Dorme por ~50 ms para simular uma troca de contexto.
+ * 3. Incrementa o valor local e grava de volta.
+ * 
+ * Esse comportamento causa uma condição de corrida, pois duas threads podem
+ * ler o mesmo valor antes de gravar, resultando em "incrementos perdidos".
+ */
+static void unsafe_increment(const char *owner)
 {
+    int local_value;
+
+    /* Etapa 1: leitura */
+    local_value = shared_counter;
+    LOG_INF("[%s] read value: %d", owner, local_value);
+
+    /* Etapa 2: simulação de atraso (context switch) */
+    k_msleep(50);
+
+    /* Etapa 3: escrita */
+    local_value = local_value + 1;
+    shared_counter = local_value;
+    LOG_INF("[%s] wrote value: %d", owner, local_value);
+}
+
+/* Thread A: incrementa continuamente */
+void thread_a(void *p1, void *p2, void *p3)
+{
+    ARG_UNUSED(p1);
+    ARG_UNUSED(p2);
+    ARG_UNUSED(p3);
+
     while (1) {
-
-        gpio_pin_set_dt(&ledA, 1);  // Liga LED verde
-
-        // Simula processamento rápido 
-        for (volatile int i = 0; i < 200000; i++) {}
-
-        gpio_pin_set_dt(&ledA, 0);  // Desliga LED verde
-   
-        k_msleep(TEMPO_A_MS);       // Dorme — libera CPU
-
-
+        unsafe_increment("A");
+        k_msleep(100);  /* pequeno atraso entre incrementos */
     }
 }
 
-// ----------------------------------------------------
-// THREAD B — Tarefa longa, baixa prioridade
-// ----------------------------------------------------
-void thread_B(void *p1, void *p2, void *p3)
+/* Thread B: faz o mesmo que A */
+void thread_b(void *p1, void *p2, void *p3)
 {
+    ARG_UNUSED(p1);
+    ARG_UNUSED(p2);
+    ARG_UNUSED(p3);
+
     while (1) {
-        gpio_pin_set_dt(&ledB, 1);  // Liga LED vermelho
-
-        // Simula processamento mais longo 
-        for (volatile int i = 0; i < 10000000; i++) {
-            if (i % 100000 == 0) {
-                // Aqui não imprimimos nada — apenas ocupamos a CPU
-            }
-        }
-
-        gpio_pin_set_dt(&ledB, 0);  // Desliga LED vermelho
-        k_msleep(TEMPO_B_MS);       // Dorme um pouco
+        unsafe_increment("B");
+        k_msleep(100);
     }
 }
 
-// ----------------------------------------------------
-// Definição das threads
-// ----------------------------------------------------
-K_THREAD_DEFINE(a_tid, 512, thread_A, NULL, NULL, NULL,
+/* Criação das threads */
+K_THREAD_DEFINE(thread_a_id, STACK_SIZE, thread_a, NULL, NULL, NULL,
                 PRIO_THREAD_A, 0, 0);
-K_THREAD_DEFINE(b_tid, 512, thread_B, NULL, NULL, NULL,
+
+K_THREAD_DEFINE(thread_b_id, STACK_SIZE, thread_b, NULL, NULL, NULL,
                 PRIO_THREAD_B, 0, 0);
 
-// ----------------------------------------------------
-// Função principal
-// ----------------------------------------------------
+/* Função principal */
 void main(void)
 {
-    // Inicializa GPIOs dos LEDs
-    if (!device_is_ready(ledA.port) || !device_is_ready(ledB.port)) {
-        return;
-    }
-    gpio_pin_configure_dt(&ledA, GPIO_OUTPUT_INACTIVE);
-    gpio_pin_configure_dt(&ledB, GPIO_OUTPUT_INACTIVE);
+    printk("=== Demonstração de Condição de Corrida no Zephyr RTOS ===\n");
+    printk("Duas threads incrementam a mesma variável sem sincronização.\n");
+    printk("shared_counter inicia em %d\n\n", shared_counter);
 
-    printk("=== Demonstração de Preempção com LEDs ===\n");
-    printk("Thread A (vermelho): prioridade %d\n", PRIO_THREAD_A);
-    printk("Thread B (verde): prioridade %d\n", PRIO_THREAD_B);
-
+    /* Loop principal: apenas exibe o valor observado periodicamente */
     while (1) {
-        k_sleep(K_FOREVER); // Main dorme para liberar CPU.
+        k_msleep(1000);
+        printk("-> observed shared_counter = %d\n", shared_counter);
     }
 }
+
+
+
