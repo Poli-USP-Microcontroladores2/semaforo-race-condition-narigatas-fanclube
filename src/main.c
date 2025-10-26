@@ -1,174 +1,141 @@
 /*
- * Copyright (c) 2024, Exemplo Acadêmico para Poli-USP
+ * Demonstração forte de Race Condition no Zephyr RTOS v4.2
+ * Placa: FRDM-KL25Z
  *
- * SPDX-License-Identifier: Apache-2.0
+ * Estratégia:
+ *  - Contador 64 bits dividido em duas partes de 32 bits.
+ *  - Várias threads incrementam esse contador de forma não atômica.
+ *  - Inserção de delays e yields para forçar preempções.
+ *  - Uma thread monitora inconsistências (regressões, saltos, repetições).
  */
-
-
-/*
- * ARQUIVO: main.c
- * OBJETIVO: Demonstrar uma Race Condition no Zephyr RTOS v4.2
- * utilizando um LED (visual) e o console serial (logs).
- * PLACA: FRDM-KL25Z
- *
- * DESCRIÇÃO:
- * Este código cria duas threads de mesma prioridade que disputam o controle
- * de dois recursos compartilhados sem qualquer mecanismo de sincronização:
- * 1. O LED azul da placa (recurso de hardware).
- * 2. O console serial (acessado via `printk`).
- *
- * - thread_a_fast_blinker: Tenta piscar o LED rapidamente e imprime um log.
- * - thread_b_slow_blinker: Tenta piscar o LED lentamente e imprime um log.
- *
- * A "condição de corrida" acontece porque o escalonador do Zephyr pode
- * interromper (preemptar) uma thread a qualquer momento para executar a outra.
- * Uma thread pode ser interrompida, por exemplo, depois de imprimir seu log,
- * mas antes de conseguir alterar o estado do LED. A outra thread então assume,
- * imprime seu próprio log e altera o LED.
- *
- * RESULTADO ESPERADO:
- * - Visual: O LED piscará de forma caótica, não seguindo nem o padrão rápido
- * nem o lento.
- * - Console Serial: Os logs de [THREAD A] e [THREAD B] aparecerão
- * intercalados e de forma imprevisível, provando que nenhuma das threads
- * consegue executar sua sequência lógica (log -> set led -> sleep) de
- * forma atômica.
- */
-
 
 #include <zephyr/kernel.h>
-#include <zephyr/device.h>
-#include <zephyr/devicetree.h>
-#include <zephyr/drivers/gpio.h>
+#include <zephyr/sys/printk.h>
+#include <stdint.h>
+#include <inttypes.h>
 
+#define STACKSIZE        1024
+#define THREAD_PRIORITY  7
+#define NUM_WORKERS      8
+#define MAX_BUSY_US      30000U   /* microsegundos de espera entre etapas */
+#define ITER_DELAY_MS    5U
 
-/* ========================================================================= */
-/* CONFIGURAÇÕES DAS THREADS E DO HARDWARE                            */
-/* ========================================================================= */
+typedef struct {
+    volatile uint32_t low;
+    volatile uint32_t high;
+} split_counter_t;
 
+static split_counter_t shared_counter = {0, 0};
 
-#define STACKSIZE 1024
-#define THREAD_PRIORITY 7 // Mesma prioridade para ambas as threads
+/* Stacks e structs das threads */
+K_THREAD_STACK_ARRAY_DEFINE(worker_stacks, NUM_WORKERS, STACKSIZE);
+static struct k_thread worker_threads[NUM_WORKERS];
 
+K_THREAD_STACK_DEFINE(monitor_stack, STACKSIZE);
+static struct k_thread monitor_thread_data;
 
-// Períodos de pisca para cada thread (em milissegundos)
-#define THREAD_A_SLEEP_MS 100 // Pisca Rápido
-#define THREAD_B_SLEEP_MS 500 // Pisca Lento
-
-
-/*
- * OS RECURSOS COMPARTILHADOS E DISPUTADOS:
- * 1. 'led': Estrutura que representa o pino do LED azul. Ambas as threads
- * tentarão escrever neste recurso de hardware.
- * 2. Console (via printk): A UART subjacente é um recurso compartilhado.
- * Ambas as threads tentarão escrever seus logs, disputando o acesso.
- */
-static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(DT_ALIAS(led1), gpios);
-
-
-// Declaração das pilhas e estruturas de controle das threads
-K_THREAD_STACK_DEFINE(thread_a_stack_area, STACKSIZE);
-K_THREAD_STACK_DEFINE(thread_b_stack_area, STACKSIZE);
-struct k_thread thread_a_data;
-struct k_thread thread_b_data;
-
-
-
-
-/* ========================================================================= */
-/* DEFINIÇÃO DAS THREADS CONCORRENTES                                 */
-/* ========================================================================= */
-
-
-/**
- * @brief Ponto de entrada da Thread A (Pisca Rápido & Log).
- */
-void thread_a_fast_blinker_entry(void *p1, void *p2, void *p3)
+/* Incremento não atômico */
+void non_atomic_increment(split_counter_t *c)
 {
-    bool led_state = true;
-    while (1) {
-        /*
-         * PONTO DA RACE CONDITION (Console e GPIO):
-         * A thread A tenta executar duas ações: imprimir e mudar o LED.
-         * O escalonador pode pausar esta thread DEPOIS do printk e ANTES
-         * do gpio_pin_set_dt, permitindo que a thread B execute e
-         * altere o estado do LED, invalidando a intenção da thread A.
-         */
-        printk("[THREAD A] Mudando estado do LED.\n");
-        gpio_pin_set_dt(&led, (int)led_state);
-       
-        k_msleep(THREAD_A_SLEEP_MS);
-        led_state = !led_state;
+    uint32_t low = c->low;
+
+    uint32_t wait = (k_cycle_get_32() % MAX_BUSY_US) + 1;
+    k_busy_wait(wait);
+
+    low++;
+    c->low = low;
+
+    if (low == 0) {
+        uint32_t high = c->high;
+        wait = (k_cycle_get_32() % (MAX_BUSY_US / 4)) + 1;
+        k_busy_wait(wait);
+        c->high = high + 1;
     }
 }
 
-
-/**
- * @brief Ponto de entrada da Thread B (Pisca Lento & Log).
- */
-void thread_b_slow_blinker_entry(void *p1, void *p2, void *p3)
+/* Leitura "não atômica" */
+uint64_t read_combined(split_counter_t *c)
 {
-    bool led_state = true;
-    while (1) {
-        /*
-         * PONTO DA RACE CONDITION (Console e GPIO):
-         * O mesmo problema ocorre aqui. A thread B pode ser interrompida
-         * a qualquer momento, fazendo com que a sequência lógica de suas
-         * operações seja corrompida pela execução da thread A.
-         */
-        printk("[THREAD B] ----> Mudando estado do LED.\n");
-        gpio_pin_set_dt(&led, (int)led_state);
-       
-        k_msleep(THREAD_B_SLEEP_MS);
-        led_state = !led_state;
+    uint32_t high1 = c->high;
+    uint32_t low   = c->low;
+    uint32_t high2 = c->high;
+
+    if (high1 != high2) {
+        return ((uint64_t)high2 << 32) | low;
+    } else {
+        return ((uint64_t)high1 << 32) | low;
     }
 }
 
-
-
-
-/* ========================================================================= */
-/* FUNÇÃO PRINCIPAL (MAIN)                                            */
-/* ========================================================================= */
-
-
-int main(void)
+/* Thread de trabalho */
+void worker_entry(void *p1, void *p2, void *p3)
 {
-    // 1. Validação e configuração do pino de GPIO do LED
-    if (!gpio_is_ready_dt(&led)) {
-        printk("Erro: Dispositivo GPIO do LED não está pronto.\n");
-        return 0;
+    int id = (int)(uintptr_t)p1;
+
+    while (1) {
+        non_atomic_increment(&shared_counter);
+
+        k_yield();
+        k_msleep(ITER_DELAY_MS);
+
+        if ((k_cycle_get_32() & 0xFF) == 0) {
+            uint64_t v = read_combined(&shared_counter);
+            printk("[W%d] snapshot = %" PRIu64 " (h=0x%08x l=0x%08x)\n",
+                   id, v, (uint32_t)(v >> 32), (uint32_t)(v & 0xFFFFFFFF));
+        }
+    }
+}
+
+/* Thread monitor */
+void monitor_entry(void *p1, void *p2, void *p3)
+{
+    uint64_t last = 0;
+
+    while (1) {
+        uint64_t now = read_combined(&shared_counter);
+
+        if (now < last) {
+            printk(">>> MONITOR: REGRESSÃO! last=%" PRIu64 " now=%" PRIu64 "\n", last, now);
+        } else if (now == last) {
+            printk(">>> MONITOR: REPETIÇÃO! value=%" PRIu64 "\n", now);
+        } else if (now - last > 1) {
+            printk(">>> MONITOR: SALTO! last=%" PRIu64 " now=%" PRIu64 "\n", last, now);
+        }
+
+        last = now;
+        k_msleep(50);
+    }
+}
+
+/* Função principal */
+void main(void)
+{
+    printk("\n=== Demonstração de Race Condition (contador 64-bit dividido) ===\n");
+    printk("FRDM-KL25Z | Zephyr 4.2\n");
+    printk("%d threads incrementam o mesmo contador sem sincronização.\n", NUM_WORKERS);
+    printk("O monitor detectará regressões, repetições e saltos.\n\n");
+
+    for (int i = 0; i < NUM_WORKERS; i++) {
+        k_thread_create(&worker_threads[i], worker_stacks[i],
+                        K_THREAD_STACK_SIZEOF(worker_stacks[i]),
+                        worker_entry,
+                        (void *)(uintptr_t)(i + 1), NULL, NULL,
+                        THREAD_PRIORITY, 0, K_NO_WAIT);
+
+        /* Define o nome corretamente (2 argumentos apenas) */
+        char name[16];
+        snprintf(name, sizeof(name), "worker%d", i + 1);
+        k_thread_name_set(&worker_threads[i], name);
     }
 
+    k_thread_create(&monitor_thread_data, monitor_stack,
+                    K_THREAD_STACK_SIZEOF(monitor_stack),
+                    monitor_entry,
+                    NULL, NULL, NULL,
+                    THREAD_PRIORITY, 0, K_NO_WAIT);
+    k_thread_name_set(&monitor_thread_data, "monitor");
 
-    if (gpio_pin_configure_dt(&led, GPIO_OUTPUT_INACTIVE) < 0) {
-        printk("Erro: Falha ao configurar o pino do LED.\n");
-        return 0;
+    while (1) {
+        k_msleep(1000);
     }
-   
-    printk("Iniciando demonstração de Race Condition no Zephyr v4.2\n");
-    printk("Observe o LED azul e os logs no console.\n\n");
-
-
-
-
-    // 2. Criação e inicialização das threads
-    k_thread_create(&thread_a_data, thread_a_stack_area,
-            K_THREAD_STACK_SIZEOF(thread_a_stack_area),
-            thread_a_fast_blinker_entry,
-            NULL, NULL, NULL,
-            THREAD_PRIORITY, 0, K_NO_WAIT);
-    k_thread_name_set(&thread_a_data, "thread_a_fast_blinker");
-
-
-    k_thread_create(&thread_b_data, thread_b_stack_area,
-            K_THREAD_STACK_SIZEOF(thread_b_stack_area),
-            thread_b_slow_blinker_entry,
-            NULL, NULL, NULL,
-            THREAD_PRIORITY, 0, K_NO_WAIT);
-    k_thread_name_set(&thread_b_data, "thread_b_slow_blinker");
-
-
-    // A função main cede o controle para o escalonador do Zephyr.
-    return 0;
 }
