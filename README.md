@@ -18,10 +18,10 @@ Quando isso acontece **sem controle de acesso**, pode ocorrer uma *Race Conditio
 As duas funções (threads) leem e escrevem na mesma variável ao mesmo tempo, resultando em comportamento incorreto.
 
 ### 🔍 Saída Serial Observada
-[A] read value: 2
-[B] read value: 2
-[A] wrote value: 3
-[B] wrote value: 3
+-[A] read value: 2
+-[B] read value: 2
+-[A] wrote value: 3
+-[B] wrote value: 3
 -> observed shared_counter = 3
 
 ### 💬 Análise
@@ -48,13 +48,13 @@ Cada thread incrementa o contador uma de cada vez.
 
 ### 📜 Saída Serial com Semáforo
 race_demo: [A] read value: 2
-[00:00:00.200,000] <inf> race_demo: [A] wrote value: 3
-[00:00:00.201,000] <inf> race_demo: [B] read value: 3
-[00:00:00.251,000] <inf> race_demo: [B] wrote value: 4
-[00:00:00.301,000] <inf> race_demo: [A] read value: 4
-[00:00:00.351,000] <inf> race_demo: [A] wrote value: 5
-[00:00:00.351,000] <inf> race_demo: [B] read value: 5
-[00:00:00.401,000] <inf> race_demo: [B] wrote value: 6
+-[00:00:00.200,000] <inf> race_demo: [A] wrote value: 3
+-[00:00:00.201,000] <inf> race_demo: [B] read value: 3
+-[00:00:00.251,000] <inf> race_demo: [B] wrote value: 4
+-[00:00:00.301,000] <inf> race_demo: [A] read value: 4
+-[00:00:00.351,000] <inf> race_demo: [A] wrote value: 5
+-[00:00:00.351,000] <inf> race_demo: [B] read value: 5
+-[00:00:00.401,000] <inf> race_demo: [B] wrote value: 6
 
 
 ### 🏁 Resultado Esperado
