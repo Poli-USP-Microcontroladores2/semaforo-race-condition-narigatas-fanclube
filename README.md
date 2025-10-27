@@ -18,11 +18,12 @@ Quando isso acontece **sem controle de acesso**, pode ocorrer uma *Race Conditio
 As duas funções (threads) leem e escrevem na mesma variável ao mesmo tempo, resultando em comportamento incorreto.
 
 ### 🔍 Saída Serial Observada
--[A] read value: 2
--[B] read value: 2
--[A] wrote value: 3
--[B] wrote value: 3
+[A] read value: 2
+[B] read value: 2
+[A] wrote value: 3
+[B] wrote value: 3
 -> observed shared_counter = 3
+
 
 ### 💬 Análise
 O sistema não realiza seu objetivo corretamente.  
