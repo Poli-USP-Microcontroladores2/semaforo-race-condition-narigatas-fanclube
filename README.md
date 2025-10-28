@@ -56,6 +56,7 @@ race_demo: [A] read value: 2
 -[00:00:00.351,000] <inf> race_demo: [A] wrote value: 5
 -[00:00:00.351,000] <inf> race_demo: [B] read value: 5
 -[00:00:00.401,000] <inf> race_demo: [B] wrote value: 6
+.............
 
 
 ### 🏁 Resultado Esperado
