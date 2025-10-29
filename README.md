@@ -10,7 +10,7 @@
 
 ---
 
-# 🧪 Planejamento de Testes – Demonstração Agressiva de Race Condition no Zephyr RTOS
+# **1. Planejamento de Testes – Demonstração Agressiva de Race Condition no Zephyr RTOS**
 
 ## 🎯 Objetivo
 
@@ -61,7 +61,7 @@ Os testes demonstram que:
 ---
 
 
-# 🧪 Planejamento de Testes – Versão Corrigida (com Mutex)
+# **2. Planejamento de Testes – Versão Corrigida (com Mutex)**
 
 ## 🎯 Objetivo
 
@@ -100,7 +100,7 @@ Com o uso de `k_mutex`, confirmamos que:
 
 ---
 
-# **Descrição da race condition e da solução**
+# **3. Descrição da race condition e da solução**
 ---
 
 ## ⚠️ O que é a Race Condition neste Sistema?
@@ -177,8 +177,9 @@ k_mutex_unlock(&sensor_mutex);
 
 ---
 
-## **Avaliação do Dimitri**
+## **4. Avaliação do Dimitri**
 
+![Serial](imagens_comprovacao/race_condition_serial.png)
 A ser realizado
 
 ---
