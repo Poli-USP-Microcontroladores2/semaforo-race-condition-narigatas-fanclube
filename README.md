@@ -1,40 +1,46 @@
-# 🧪 Planejamento de Testes – Visualização de Race Condition no Zephyr RTOS
+# 🧪 Planejamento de Testes – Demonstração Agressiva de Race Condition no Zephyr RTOS
 
 ## 🎯 Objetivo
-Demonstrar e visualizar a ocorrência de **race condition** quando múltiplas threads acessam simultaneamente um recurso compartilhado (`shared_sensor_data`) **sem mecanismos de sincronização** no Zephyr RTOS, utilizando a placa **FRDM-KL25Z**.
+
+Evidenciar a ocorrência de **race conditions** causadas por acesso concorrente ao recurso compartilhado `shared_sensor_data` entre múltiplas threads de sensor, sob forte preempção induzida por uma **thread de alta prioridade**, utilizando a placa **FRDM-KL25Z** e o Zephyr RTOS.
 
 ---
 
-## 🧩 Casos de Teste
+## 🧩 Casos de Teste 
 
-| **Caso de Teste** | **Pré-condição** | **Etapas de Teste** | **Pós-condição Esperada** |
-|--------------------|------------------|----------------------|----------------------------|
-| **1. Execução Padrão com Três Threads Concorrentes** | - Firmware compilado e gravado na FRDM-KL25Z.<br>- Conexão serial ativa (115200 baud).<br>- Nenhum outro processo em execução na placa.<br>- LEDs conectados corretamente. | 1. Energizar a placa e iniciar a execução do firmware.<br>2. Observar os LEDs correspondentes a cada thread (led0, led1, led2).<br>3. Monitorar o terminal serial para saída de logs.<br>4. Anotar mensagens “RACE CONDITION!”. | - LEDs piscam de maneira não determinística.<br>- Logs mostram mensagens “RACE CONDITION!” em diferentes threads.<br>- Valor de timestamp e sequência inconsistentes.<br>- Ao final, LEDs piscam continuamente (erro detectado). |
-| **2. Execução Múltipla (Testar Reprodutibilidade do Problema)** | - Mesmo firmware e ambiente do Caso 1.<br>- Terminal serial aberto para leitura.<br>- Nenhuma modificação no código. | 1. Executar o firmware repetidas vezes (mínimo 5 execuções).<br>2. Registrar a ocorrência (ou não) de mensagens “RACE CONDITION!”.<br>3. Observar se a ordem das mensagens muda entre execuções.<br>4. Comparar o comportamento dos LEDs entre tentativas. | - Ocorrem mensagens “RACE CONDITION!” em execuções diferentes.<br>- Ordem e thread afetada variam (comportamento não determinístico).<br>- LEDs podem acender de forma diferente a cada execução.<br>- Sistema entra no estado de erro (LEDs piscando em loop). |
-| **3. Teste de Estresse com Atrasos Aleatórios** | - Mesmo ambiente e código base.<br>- Inserido atraso extra (`k_sleep(K_MSEC(2))`) em pontos diferentes da função `sensor_operation_critical()` para simular variação de tempo de CPU. | 1. Modificar o código para inserir `k_sleep()` adicional.<br>2. Recompilar e gravar o firmware na placa.<br>3. Executar e observar o comportamento dos LEDs e logs.<br>4. Contar quantas mensagens “RACE CONDITION!” são exibidas. | - O número de erros “RACE CONDITION!” aumenta com atrasos.<br>- Threads interferem mais frequentemente nos dados compartilhados.<br>- LEDs piscam de forma irregular e rápida.<br>- Sistema entra em estado de erro (pisca contínuo). |
+| **Caso de Teste**                                                                                  | **Pré-condição**                                                                                                       | **Etapas de Teste**                                                                                                                                                                                                       | **Resultado Esperado**                                                                                                                                                                                                        |
+| -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Execução Base com Threads Concorrentes e Preempção** *(Caso principal e obrigatório)*         | - Firmware original gravado na FRDM-KL25Z.<br>- Comunicação serial ativa a 115200 baud.<br>- LEDs da placa funcionais. | 1. Energizar a placa.<br>2. Observar atividade dos LEDs das 3 threads de sensor.<br>3. Monitorar o terminal serial.<br>4. Anotar ocorrências de `*** RACE CONDITION!`.                                                    | - Logs exibem mensagens de race condition.<br>- Dados inconsistentes de timestamp/temperatura/sequence aparecem.<br>- LED da thread que detectou o problema acende.<br>- Ao final, LEDs piscam juntos indicando falha global. |
+| **2. Execução Repetida para Observação de Não-Determinismo** *(Mostra comportamento imprevisível)* | - Mesmo firmware do Caso 1.<br>- Terminal conectado.                                                                   | 1. Executar o firmware pelo menos 5 vezes (reset entre execuções).<br>2. Registrar qual thread detecta o erro primeiro em cada execução.<br>3. Comparar ordem e quantidade de erros entre execuções.                      | - A falha ocorre em execuções diferentes, porém **não de forma igual**.<br>- Ordem das mensagens e thread afetada varia.<br>- Evidencia comportamento não determinístico típico de race condition.                            |
+| **3. Teste de Estresse Aumentando Preempção** *(Sensibiliza o erro para facilitar visualização)*   | - Firmware modificado para aumentar carga de CPU dentro de `cpu_work_cycles()` (ex.: dobrar valores).                  | 1. Alterar valores de `cpu_work_cycles()` para aumentar janelas de preempção.<br>2. Recompilar, gravar e executar.<br>3. Observar logs e intensidade dos LEDs.<br>4. Contar quantidade de `*** RACE CONDITION!` exibidas. | - Quantidade de erros aumenta significativamente.<br>- Race condition ocorre mais cedo e mais vezes.<br>- LEDs mostram interferência mais intensa.<br>- Demonstra que quanto maior a preempção, maior o risco de corrida.     |
 
 ---
 
-## 🧠 Observações Gerais
 
-- O **problema é proposital**: o código **não utiliza mecanismos de exclusão mútua**, como `k_mutex_lock()` ou `atomic` operations.  
-- O comportamento **não determinístico** é esperado e serve para **ilustrar a race condition**.  
-- O LED piscando constantemente ao final indica que a variável `race_condition_detected = true`.  
-- Os logs via `printk()` mostram o conflito entre threads durante a escrita de `shared_sensor_data.timestamp`.
+## 🧠 Observações Importantes
+
+* A **thread preemptora** é responsável por gerar preempção frequente, criando as janelas críticas onde o contexto muda no meio de operações não atômicas.
+* A variável `shared_sensor_data` contém múltiplos campos, sendo escrita e lida parcialmente — situação clássica de race condition em estruturas compostas.
+* `volatile` **não elimina** race conditions — apenas impede otimizações de compilador.
+* `k_yield()` foi propositalmente adicionado para forçar mudanças de contexto nos piores momentos possíveis.
 
 ---
 
 ## 📊 Resultados Esperados
 
-| **Indicador** | **Descrição** |
-|----------------|----------------|
-| `RACE CONDITION!` no terminal | Confirmação da condição de corrida detectada |
-| LEDs piscando juntos | Indicação visual de erro global |
-| Saídas diferentes a cada execução | Evidência de comportamento não determinístico |
-| Valor de sequência e timestamp corrompidos | Demonstra falha no acesso simultâneo ao recurso |
+| **Indicador**                                | **Descrição**                          |
+| -------------------------------------------- | -------------------------------------- |
+| Logs contendo `*** RACE CONDITION!`          | Evidência direta da falha              |
+| Campos inconsistentes (timestamp, temp, seq) | Prova de corrupção de dados            |
+| LED da thread que detectou o problema acende | Identifica qual thread observou o erro |
+| LEDs piscando juntos no final                | Indica falha global após detecção      |
 
 ---
 
 ## 🧩 Conclusão
 
-Os testes demonstram que, em um ambiente multitarefa sem sincronização adequada, o acesso simultâneo a variáveis compartilhadas resulta em **inconsistência de dados** e **comportamento imprevisível** — características clássicas de uma **race condition**.
+Os testes demonstram que:
+
+* A ausência de mecanismos de sincronização como `k_mutex`, `k_spinlock`, atomic APIs ou semáforos leva a **corrupção de dados compartilhados** em ambiente multitarefa.
+* A introdução de uma thread preemptora de alta prioridade gera um cenário ideal para **exposição de race conditions ocultas**.
+* O comportamento **não determinístico** observado nas execuções prova a imprevisibilidade e o risco do acesso concorrente sem proteção.

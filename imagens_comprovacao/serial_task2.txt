@@ -1,0 +1,148 @@
+*** Booting Zephyr OS build zephyr-v40200 ***
+
+*** Demonstracao Race Condition - Zephyr RTOS 4.2 - FRDM-KL25Z ***
+3 threads acessando recurso compartilhado SEM sincronizacao
+
+Thread 1: Inicializando sensor
+Thread 2: Inicializando sensor
+Thread 3: Inicializando sensor
+Thread 1: *** RACE CONDITION! Esperado: 1001, Recebido: 3003
+Thread 2: *** RACE CONDITION! Esperado: 2002, Recebido: 3003
+Thread 3: Leitura OK - timestamp: 3003, temp: 23°C, seq: 3
+Thread 1: Leitura OK - timestamp: 1101, temp: 21°C, seq: 4
+Thread 2: *** RACE CONDITION! Esperado: 2102, Recebido: 3103
+Thread 3: Leitura OK - timestamp: 3103, temp: 23°C, seq: 6
+Thread 1: Leitura OK - timestamp: 1201, temp: 21°C, seq: 7
+Thread 2: *** RACE CONDITION! Esperado: 2202, Recebido: 3203
+Thread 3: Leitura OK - timestamp: 3203, temp: 23°C, seq: 9
+Thread 1: Leitura OK - timestamp: 1301, temp: 21°C, seq: 10
+Thread 2: *** RACE CONDITION! Esperado: 2302, Recebido: 3303
+Thread 3: Leitura OK - timestamp: 3303, temp: 23°C, seq: 12
+Thread 1: Leitura OK - timestamp: 1401, temp: 21°C, seq: 13
+Thread 2: *** RACE CONDITION! Esperado: 2402, Recebido: 3403
+Thread 3: Leitura OK - timestamp: 3403, temp: 23°C, seq: 15
+
+*** Resultado Final ***
+Total de operacoes: 15
+Race conditions detectadas: SIM - SISTEMA INCONSISTENTE!
+*** ALERTA: Dados do sensor corrompidos por race condition! ***
+---- Closed the serial port COM3 ----
+---- Opened the serial port COM3 ----
+*** Booting Zephyr OS build zephyr-v40200 ***
+
+*** Demonstracao Race Condition - Zephyr RTOS 4.2 - FRDM-KL25Z ***
+3 threads acessando recurso compartilhado SEM sincronizacao
+
+Thread 1: Inicializando sensor
+Thread 2: Inicializando sensor
+Thread 3: Inicializando sensor
+Thread 1: *** RACE CONDITION! Esperado: 1001, Recebido: 3003
+Thread 2: *** RACE CONDITION! Esperado: 2002, Recebido: 3003
+Thread 3: Leitura OK - timestamp: 3003, temp: 23°C, seq: 3
+Thread 1: Leitura OK - timestamp: 1101, temp: 21°C, seq: 4
+Thread 2: *** RACE CONDITION! Esperado: 2102, Recebido: 3103
+Thread 3: Leitura OK - timestamp: 3103, temp: 23°C, seq: 6
+Thread 1: Leitura OK - timestamp: 1201, temp: 21°C, seq: 7
+Thread 2: *** RACE CONDITION! Esperado: 2202, Recebido: 3203
+Thread 3: Leitura OK - timestamp: 3203, temp: 23°C, seq: 9
+Thread 1: Leitura OK - timestamp: 1301, temp: 21°C, seq: 10
+Thread 2: *** RACE CONDITION! Esperado: 2302, Recebido: 3303
+Thread 3: Leitura OK - timestamp: 3303, temp: 23°C, seq: 12
+Thread 1: Leitura OK - timestamp: 1401, temp: 21°C, seq: 13
+Thread 2: *** RACE CONDITION! Esperado: 2402, Recebido: 3403
+Thread 3: Leitura OK - timestamp: 3403, temp: 23°C, seq: 15
+
+*** Resultado Final ***
+Total de operacoes: 15
+Race conditions detectadas: SIM - SISTEMA INCONSISTENTE!
+*** ALERTA: Dados do sensor corrompidos por race condition! ***
+---- Closed the serial port COM3 ----
+---- Opened the serial port COM3 ----
+*** Booting Zephyr OS build zephyr-v40200 ***
+
+*** Demonstracao Race Condition - Zephyr RTOS 4.2 - FRDM-KL25Z ***
+3 threads acessando recurso compartilhado SEM sincronizacao
+
+Thread 1: Inicializando sensor
+Thread 2: Inicializando sensor
+Thread 3: Inicializando sensor
+Thread 1: *** RACE CONDITION! Esperado: 1001, Recebido: 3003
+Thread 2: *** RACE CONDITION! Esperado: 2002, Recebido: 3003
+Thread 3: Leitura OK - timestamp: 3003, temp: 23°C, seq: 3
+Thread 1: Leitura OK - timestamp: 1101, temp: 21°C, seq: 4
+Thread 2: *** RACE CONDITION! Esperado: 2102, Recebido: 3103
+Thread 3: Leitura OK - timestamp: 3103, temp: 23°C, seq: 6
+Thread 1: Leitura OK - timestamp: 1201, temp: 21°C, seq: 7
+Thread 2: *** RACE CONDITION! Esperado: 2202, Recebido: 3203
+Thread 3: Leitura OK - timestamp: 3203, temp: 23°C, seq: 9
+Thread 1: Leitura OK - timestamp: 1301, temp: 21°C, seq: 10
+Thread 2: *** RACE CONDITION! Esperado: 2302, Recebido: 3303
+Thread 3: Leitura OK - timestamp: 3303, temp: 23°C, seq: 12
+Thread 1: Leitura OK - timestamp: 1401, temp: 21°C, seq: 13
+Thread 2: *** RACE CONDITION! Esperado: 2402, Recebido: 3403
+Thread 3: Leitura OK - timestamp: 3403, temp: 23��C, seq: 15
+
+*** Resultado Final ***
+Total de operacoes: 15
+Race conditions detectadas: SIM - SISTEMA INCONSISTENTE!
+*** ALERTA: Dados do sensor corrompidos por race condition! ***
+---- Closed the serial port COM3 ----
+---- Opened the serial port COM3 ----
+*** Booting Zephyr OS build zephyr-v40200 ***
+
+*** Demonstracao Race Condition - Zephyr RTOS 4.2 - FRDM-KL25Z ***
+3 threads acessando recurso compartilhado SEM sincronizacao
+
+Thread 1: Inicializando sensor
+Thread 2: Inicializando sensor
+Thread 3: Inicializando sensor
+Thread 1: *** RACE CONDITION! Esperado: 1001, Recebido: 3003
+Thread 2: *** RACE CONDITION! Esperado: 2002, Recebido: 3003
+Thread 3: Leitura OK - timestamp: 3003, temp: 23°C, seq: 3
+Thread 1: Leitura OK - timestamp: 1101, temp: 21°C, seq: 4
+Thread 2: *** RACE CONDITION! Esperado: 2102, Recebido: 3103
+Thread 3: Leitura OK - timestamp: 3103, temp: 23°C, seq: 6
+Thread 1: Leitura OK - timestamp: 1201, temp: 21°C, seq: 7
+Thread 2: *** RACE CONDITION! Esperado: 2202, Recebido: 3203
+Thread 3: Leitura OK - timestamp: 3203, temp: 23°C, seq: 9
+Thread 1: Leitura OK - timestamp: 1301, temp: 21°C, seq: 10
+Thread 2: *** RACE CONDITION! Esperado: 2302, Recebido: 3303
+Thread 3: Leitura OK - timestamp: 3303, temp: 23°C, seq: 12
+Thread 1: Leitura OK - timestamp: 1401, temp: 21°C, seq: 13
+Thread 2: *** RACE CONDITION! Esperado: 2402, Recebido: 3403
+Thread 3: Leitura OK - timestamp: 3403, temp: 23°C, seq: 15
+
+*** Resultado Final ***
+Total de operacoes: 15
+Race conditions detectadas: SIM - SISTEMA INCONSISTENTE!
+*** ALERTA: Dados do sensor corrompidos por race condition! ***
+---- Closed the serial port COM3 ----
+---- Opened the serial port COM3 ----
+*** Booting Zephyr OS build zephyr-v40200 ***
+
+*** Demonstracao Race Condition - Zephyr RTOS 4.2 - FRDM-KL25Z ***
+3 threads acessando recurso compartilhado SEM sincronizacao
+
+Thread 1: Inicializando sensor
+Thread 2: Inicializando sensor
+Thread 3: Inicializando sensor
+Thread 1: *** RACE CONDITION! Esperado: 1001, Recebido: 3003
+Thread 2: *** RACE CONDITION! Esperado: 2002, Recebido: 3003
+Thread 3: Leitura OK - timestamp: 3003, temp: 23°C, seq: 3
+Thread 1: Leitura OK - timestamp: 1101, temp: 21°C, seq: 4
+Thread 2: *** RACE CONDITION! Esperado: 2102, Recebido: 3103
+Thread 3: Leitura OK - timestamp: 3103, temp: 23°C, seq: 6
+Thread 1: Leitura OK - timestamp: 1201, temp: 21°C, seq: 7
+Thread 2: *** RACE CONDITION! Esperado: 2202, Recebido: 3203
+Thread 3: Leitura OK - timestamp: 3203, temp: 23°C, seq: 9
+Thread 1: Leitura OK - timestamp: 1301, temp: 21°C, seq: 10
+Thread 2: *** RACE CONDITION! Esperado: 2302, Recebido: 3303
+Thread 3: Leitura OK - timestamp: 3303, temp: 23°C, seq: 12
+Thread 1: Leitura OK - timestamp: 1401, temp: 21��C, seq: 13
+Thread 2: *** RACE CONDITION! Esperado: 2402, Recebido: 3403
+Thread 3: Leitura OK - timestamp: 3403, temp: 23��C, seq: 15
+
+*** Resultado Final ***
+Total de operacoes: 15
+Race conditions detectadas: SIM - SISTEMA INCONSISTENTE!
+*** ALERTA: Dados do sensor corrompidos por race condition! ***
