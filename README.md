@@ -52,15 +52,15 @@ Os testes demonstram que:
 ---
 
 
-## 🧪 Planejamento de Testes – Versão Corrigida (com Mutex)
+# 🧪 Planejamento de Testes – Versão Corrigida (com Mutex)
 
-### 🎯 Objetivo
+## 🎯 Objetivo
 
 Validar que, com o uso de `k_mutex`, o acesso concorrente ao recurso compartilhado não apresenta mais corrupção de dados, mesmo sob forte preempção e múltiplas execuções.
 
 ---
 
-### 🧩 Casos de Teste
+## 🧩 Casos de Teste
 
 | **Caso de Teste**                                             | **Pré-condição**                                                                              | **Etapas de Teste**                                                                                                       | **Pós-Condição Esperada (Corrigida)**                                                                                                                                                  |
 | --------------------------------------------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -70,7 +70,7 @@ Validar que, com o uso de `k_mutex`, o acesso concorrente ao recurso compartilha
 
 ---
 
-### 📌 Mudanças nas Pós-Condições (em relação à versão com race)
+## 📌 Mudanças nas Pós-Condições (em relação à versão com race)
 
 | Antes (Sem Mutex)                  | Agora (Com Mutex)                    |
 | ---------------------------------- | ------------------------------------ |
