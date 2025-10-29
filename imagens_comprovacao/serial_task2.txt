@@ -1,148 +1,524 @@
-*** Booting Zephyr OS build zephyr-v40200 ***
-
-*** Demonstracao Race Condition - Zephyr RTOS 4.2 - FRDM-KL25Z ***
-3 threads acessando recurso compartilhado SEM sincronizacao
-
-Thread 1: Inicializando sensor
-Thread 2: Inicializando sensor
-Thread 3: Inicializando sensor
-Thread 1: *** RACE CONDITION! Esperado: 1001, Recebido: 3003
-Thread 2: *** RACE CONDITION! Esperado: 2002, Recebido: 3003
-Thread 3: Leitura OK - timestamp: 3003, temp: 23°C, seq: 3
-Thread 1: Leitura OK - timestamp: 1101, temp: 21°C, seq: 4
-Thread 2: *** RACE CONDITION! Esperado: 2102, Recebido: 3103
-Thread 3: Leitura OK - timestamp: 3103, temp: 23°C, seq: 6
-Thread 1: Leitura OK - timestamp: 1201, temp: 21°C, seq: 7
-Thread 2: *** RACE CONDITION! Esperado: 2202, Recebido: 3203
-Thread 3: Leitura OK - timestamp: 3203, temp: 23°C, seq: 9
-Thread 1: Leitura OK - timestamp: 1301, temp: 21°C, seq: 10
-Thread 2: *** RACE CONDITION! Esperado: 2302, Recebido: 3303
-Thread 3: Leitura OK - timestamp: 3303, temp: 23°C, seq: 12
-Thread 1: Leitura OK - timestamp: 1401, temp: 21°C, seq: 13
-Thread 2: *** RACE CONDITION! Esperado: 2402, Recebido: 3403
-Thread 3: Leitura OK - timestamp: 3403, temp: 23°C, seq: 15
-
-*** Resultado Final ***
-Total de operacoes: 15
-Race conditions detectadas: SIM - SISTEMA INCONSISTENTE!
-*** ALERTA: Dados do sensor corrompidos por race condition! ***
----- Closed the serial port COM3 ----
 ---- Opened the serial port COM3 ----
 *** Booting Zephyr OS build zephyr-v40200 ***
 
-*** Demonstracao Race Condition - Zephyr RTOS 4.2 - FRDM-KL25Z ***
-3 threads acessando recurso compartilhado SEM sincronizacao
+*** Demo AGRESSIVA: Race Condition - Zephyr RTOS - FRDM-KL25Z ***
+OPERATION_COUNT=50 | Preemptor: sleep=8ms cpu_work=25000 cycles
 
-Thread 1: Inicializando sensor
-Thread 2: Inicializando sensor
-Thread 3: Inicializando sensor
-Thread 1: *** RACE CONDITION! Esperado: 1001, Recebido: 3003
-Thread 2: *** RACE CONDITION! Esperado: 2002, Recebido: 3003
+Thread 1: Inicializando sensor (base=1000)
+Thread 2: Inicializando sensor (base=2000)
+Thread 3: Inicializando sensor (base=3000)
+Thread 1: *** RACE CONDITION! Esperado(ts=1001,temp=21,seq>=1) -> Recebido(ts=3003,temp=23,seq=3)
+Thread 2: *** RACE CONDITION! Esperado(ts=2002,temp=22,seq>=1) -> Recebido(ts=3003,temp=23,seq=3)
 Thread 3: Leitura OK - timestamp: 3003, temp: 23°C, seq: 3
-Thread 1: Leitura OK - timestamp: 1101, temp: 21°C, seq: 4
-Thread 2: *** RACE CONDITION! Esperado: 2102, Recebido: 3103
-Thread 3: Leitura OK - timestamp: 3103, temp: 23°C, seq: 6
-Thread 1: Leitura OK - timestamp: 1201, temp: 21°C, seq: 7
-Thread 2: *** RACE CONDITION! Esperado: 2202, Recebido: 3203
+Thread 1: *** RACE CONDITION! Esperado(ts=1101,temp=21,seq>=1) -> Recebido(ts=2102,temp=22,seq=5)
+Thread 2: *** RACE CONDITION! Esperado(ts=2102,temp=22,seq>=1) -> Recebido(ts=3103,temp=22,seq=5)
+Thread 3: *** RACE CONDITION! Esperado(ts=3103,temp=23,seq>=1) -> Recebido(ts=1201,temp=23,seq=6)
+Thread 1: *** RACE CONDITION! Esperado(ts=1201,temp=21,seq>=1) -> Recebido(ts=2202,temp=21,seq=7)
+Thread 2: *** RACE CONDITION! Esperado(ts=2202,temp=22,seq>=1) -> Recebido(ts=3203,temp=23,seq=8)
 Thread 3: Leitura OK - timestamp: 3203, temp: 23°C, seq: 9
-Thread 1: Leitura OK - timestamp: 1301, temp: 21°C, seq: 10
-Thread 2: *** RACE CONDITION! Esperado: 2302, Recebido: 3303
-Thread 3: Leitura OK - timestamp: 3303, temp: 23°C, seq: 12
-Thread 1: Leitura OK - timestamp: 1401, temp: 21°C, seq: 13
-Thread 2: *** RACE CONDITION! Esperado: 2402, Recebido: 3403
-Thread 3: Leitura OK - timestamp: 3403, temp: 23°C, seq: 15
-
-*** Resultado Final ***
-Total de operacoes: 15
-Race conditions detectadas: SIM - SISTEMA INCONSISTENTE!
-*** ALERTA: Dados do sensor corrompidos por race condition! ***
----- Closed the serial port COM3 ----
----- Opened the serial port COM3 ----
-*** Booting Zephyr OS build zephyr-v40200 ***
-
-*** Demonstracao Race Condition - Zephyr RTOS 4.2 - FRDM-KL25Z ***
-3 threads acessando recurso compartilhado SEM sincronizacao
-
-Thread 1: Inicializando sensor
-Thread 2: Inicializando sensor
-Thread 3: Inicializando sensor
-Thread 1: *** RACE CONDITION! Esperado: 1001, Recebido: 3003
-Thread 2: *** RACE CONDITION! Esperado: 2002, Recebido: 3003
-Thread 3: Leitura OK - timestamp: 3003, temp: 23°C, seq: 3
-Thread 1: Leitura OK - timestamp: 1101, temp: 21°C, seq: 4
-Thread 2: *** RACE CONDITION! Esperado: 2102, Recebido: 3103
-Thread 3: Leitura OK - timestamp: 3103, temp: 23°C, seq: 6
-Thread 1: Leitura OK - timestamp: 1201, temp: 21°C, seq: 7
-Thread 2: *** RACE CONDITION! Esperado: 2202, Recebido: 3203
-Thread 3: Leitura OK - timestamp: 3203, temp: 23°C, seq: 9
-Thread 1: Leitura OK - timestamp: 1301, temp: 21°C, seq: 10
-Thread 2: *** RACE CONDITION! Esperado: 2302, Recebido: 3303
-Thread 3: Leitura OK - timestamp: 3303, temp: 23°C, seq: 12
-Thread 1: Leitura OK - timestamp: 1401, temp: 21°C, seq: 13
-Thread 2: *** RACE CONDITION! Esperado: 2402, Recebido: 3403
+Thread 1: *** RACE CONDITION! Esperado(ts=1301,temp=21,seq>=1) -> Recebido(ts=2302,temp=22,seq=10)
+Thread 2: *** RACE CONDITION! Esperado(ts=2302,temp=22,seq>=1) -> Recebido(ts=3303,temp=22,seq=11)
+Thread 3: *** RACE CONDITION! Esperado(ts=3303,temp=23,seq>=1) -> Recebido(ts=1401,temp=23,seq=12)
+Thread 1: *** RACE CONDITION! Esperado(ts=1401,temp=21,seq>=1) -> Recebido(ts=2402,temp=21,seq=13)
+Thread 2: *** RACE CONDITION! Esperado(ts=2402,temp=22,seq>=1) -> Recebido(ts=3403,temp=23,seq=15)
 Thread 3: Leitura OK - timestamp: 3403, temp: 23��C, seq: 15
-
-*** Resultado Final ***
-Total de operacoes: 15
-Race conditions detectadas: SIM - SISTEMA INCONSISTENTE!
-*** ALERTA: Dados do sensor corrompidos por race condition! ***
+Thread 1: *** RACE CONDITION! Esperado(ts=1501,temp=21,seq>=1) -> Recebido(ts=3503,temp=22,seq=17)
+Thread 2: *** RACE CONDITION! Esperado(ts=2502,temp=22,seq>=1) -> Recebido(ts=3503,temp=22,seq=17)
+Thread 3: *** RACE CONDITION! Esperado(ts=3503,temp=23,seq>=1) -> Recebido(ts=1601,temp=23,seq=18)
+Thread 1: *** RACE CONDITION! Esperado(ts=1601,temp=21,seq>=1) -> Recebido(ts=3603,temp=21,seq=19)
+Thread 2: *** RACE CONDITION! Esperado(ts=2602,temp=22,seq>=1) -> Recebido(ts=3603,temp=23,seq=21)
+Thread 3: Leitura OK - timestamp: 3603, temp: 23°C, seq: 21
+Thread 1: *** RACE CONDITION! Esperado(ts=1701,temp=21,seq>=1) -> Recebido(ts=3703,temp=22,seq=22)
+Thread 2: *** RACE CONDITION! Esperado(ts=2702,temp=22,seq>=1) -> Recebido(ts=3703,temp=23,seq=23)
+Thread 3: Leitura OK - timestamp: 3703, temp: 23°C, seq: 24
+Thread 1: *** RACE CONDITION! Esperado(ts=1801,temp=21,seq>=1) -> Recebido(ts=3803,temp=22,seq=26)
+Thread 2: *** RACE CONDITION! Esperado(ts=2802,temp=22,seq>=1) -> Recebido(ts=3803,temp=22,seq=26)
+Thread 3: *** RACE CONDITION! Esperado(ts=3803,temp=23,seq>=1) -> Recebido(ts=1901,temp=23,seq=27)
+Thread 1: *** RACE CONDITION! Esperado(ts=1901,temp=21,seq>=1) -> Recebido(ts=2902,temp=22,seq=28)
+Thread 2: Leitura OK - timestamp: 2902, temp: 22°C, seq: 29
+Thread 3: *** RACE CONDITION! Esperado(ts=3903,temp=23,seq>=1) -> Recebido(ts=2001,temp=21,seq=30)
+Thread 1: *** RACE CONDITION! Esperado(ts=2001,temp=21,seq>=1) -> Recebido(ts=3002,temp=21,seq=31)
+Thread 2: *** RACE CONDITION! Esperado(ts=3002,temp=22,seq>=1) -> Recebido(ts=4003,temp=22,seq=32)
+Thread 3: *** RACE CONDITION! Esperado(ts=4003,temp=23,seq>=1) -> Recebido(ts=2101,temp=23,seq=33)
+Thread 1: *** RACE CONDITION! Esperado(ts=2101,temp=21,seq>=1) -> Recebido(ts=3102,temp=22,seq=35)
+Thread 2: Leitura OK - timestamp: 3102, temp: 22°C, seq: 35
+Thread 3: *** RACE CONDITION! Esperado(ts=4103,temp=23,seq>=1) -> Recebido(ts=3202,temp=21,seq=37)
+Thread 1: *** RACE CONDITION! Esperado(ts=2201,temp=21,seq>=1) -> Recebido(ts=3202,temp=21,seq=37)
+Thread 2: *** RACE CONDITION! Esperado(ts=3202,temp=22,seq>=1) -> Recebido(ts=4203,temp=22,seq=38)
+Thread 3: *** RACE CONDITION! Esperado(ts=4203,temp=23,seq>=1) -> Recebido(ts=3302,temp=23,seq=39)
+Thread 1: *** RACE CONDITION! Esperado(ts=2301,temp=21,seq>=1) -> Recebido(ts=3302,temp=22,seq=41)
+Thread 2: Leitura OK - timestamp: 3302, temp: 22°C, seq: 41
+Thread 3: *** RACE CONDITION! Esperado(ts=4303,temp=23,seq>=1) -> Recebido(ts=3402,temp=21,seq=42)
+Thread 1: *** RACE CONDITION! Esperado(ts=2401,temp=21,seq>=1) -> Recebido(ts=3402,temp=22,seq=43)
+Thread 2: Leitura OK - timestamp: 3402, temp: 22°C, seq: 44
+Thread 3: *** RACE CONDITION! Esperado(ts=4403,temp=23,seq>=1) -> Recebido(ts=3502,temp=21,seq=46)
+Thread 1: *** RACE CONDITION! Esperado(ts=2501,temp=21,seq>=1) -> Recebido(ts=3502,temp=21,seq=46)
+Thread 2: *** RACE CONDITION! Esperado(ts=3502,temp=22,seq>=1) -> Recebido(ts=4503,temp=22,seq=47)
+Thread 3: *** RACE CONDITION! Esperado(ts=4503,temp=23,seq>=1) -> Recebido(ts=2601,temp=21,seq=48)
+Thread 1: Leitura OK - timestamp: 2601, temp: 21°C, seq: 49
+Thread 2: *** RACE CONDITION! Esperado(ts=3602,temp=22,seq>=1) -> Recebido(ts=4603,temp=23,seq=50)
+Thread 3: *** RACE CONDITION! Esperado(ts=4603,temp=23,seq>=1) -> Recebido(ts=2701,temp=23,seq=51)
+Thread 1: *** RACE CONDITION! Esperado(ts=2701,temp=21,seq>=1) -> Recebido(ts=3702,temp=21,seq=52)
+Thread 2: *** RACE CONDITION! Esperado(ts=3702,temp=22,seq>=1) -> Recebido(ts=4703,temp=22,seq=53)
+Thread 3: *** RACE CONDITION! Esperado(ts=4703,temp=23,seq>=1) -> Recebido(ts=2801,temp=21,seq=55)
+Thread 1: Leitura OK - timestamp: 2801, temp: 21°C, seq: 55
+Thread 2: *** RACE CONDITION! Esperado(ts=3802,temp=22,seq>=1) -> Recebido(ts=2901,temp=23,seq=57)
+Thread 3: *** RACE CONDITION! Esperado(ts=4803,temp=23,seq>=1) -> Recebido(ts=2901,temp=23,seq=57)
+Thread 1: *** RACE CONDITION! Esperado(ts=2901,temp=21,seq>=1) -> Recebido(ts=3902,temp=21,seq=58)
+Thread 2: *** RACE CONDITION! Esperado(ts=3902,temp=22,seq>=1) -> Recebido(ts=3001,temp=22,seq=59)
+Thread 3: *** RACE CONDITION! Esperado(ts=4903,temp=23,seq>=1) -> Recebido(ts=3001,temp=21,seq=61)
+Thread 1: Leitura OK - timestamp: 3001, temp: 21°C, seq: 61
+Thread 2: *** RACE CONDITION! Esperado(ts=4002,temp=22,seq>=1) -> Recebido(ts=3101,temp=23,seq=63)
+Thread 3: *** RACE CONDITION! Esperado(ts=5003,temp=23,seq>=1) -> Recebido(ts=3101,temp=21,seq=63)
+Thread 1: Leitura OK - timestamp: 3101, temp: 21°C, seq: 64
+Thread 2: *** RACE CONDITION! Esperado(ts=4102,temp=22,seq>=1) -> Recebido(ts=3201,temp=23,seq=66)
+Thread 3: *** RACE CONDITION! Esperado(ts=5103,temp=23,seq>=1) -> Recebido(ts=3201,temp=23,seq=66)
+Thread 1: *** RACE CONDITION! Esperado(ts=3201,temp=21,seq>=1) -> Recebido(ts=4202,temp=21,seq=67)
+Thread 2: *** RACE CONDITION! Esperado(ts=4202,temp=22,seq>=1) -> Recebido(ts=5203,temp=23,seq=68)
+Thread 3: Leitura OK - timestamp: 5203, temp: 23°C, seq: 69
+Thread 1: *** RACE CONDITION! Esperado(ts=3301,temp=21,seq>=1) -> Recebido(ts=4302,temp=22,seq=70)
+Thread 2: *** RACE CONDITION! Esperado(ts=4302,temp=22,seq>=1) -> Recebido(ts=5303,temp=22,seq=71)
+Thread 3: *** RACE CONDITION! Esperado(ts=5303,temp=23,seq>=1) -> Recebido(ts=3401,temp=23,seq=72)
+Thread 1: *** RACE CONDITION! Esperado(ts=3401,temp=21,seq>=1) -> Recebido(ts=4402,temp=21,seq=73)
+Thread 2: *** RACE CONDITION! Esperado(ts=4402,temp=22,seq>=1) -> Recebido(ts=5403,temp=23,seq=75)
+Thread 3: Leitura OK - timestamp: 5403, temp: 23°C, seq: 75
+Thread 1: *** RACE CONDITION! Esperado(ts=3501,temp=21,seq>=1) -> Recebido(ts=5503,temp=22,seq=77)
+Thread 2: *** RACE CONDITION! Esperado(ts=4502,temp=22,seq>=1) -> Recebido(ts=5503,temp=22,seq=77)
+Thread 3: *** RACE CONDITION! Esperado(ts=5503,temp=23,seq>=1) -> Recebido(ts=3601,temp=23,seq=78)
+Thread 1: *** RACE CONDITION! Esperado(ts=3601,temp=21,seq>=1) -> Recebido(ts=5603,temp=21,seq=79)
+Thread 2: *** RACE CONDITION! Esperado(ts=4602,temp=22,seq>=1) -> Recebido(ts=5603,temp=23,seq=81)
+Thread 3: Leitura OK - timestamp: 5603, temp: 23°C, seq: 81
+Thread 1: *** RACE CONDITION! Esperado(ts=3701,temp=21,seq>=1) -> Recebido(ts=5703,temp=22,seq=83)
+Thread 2: *** RACE CONDITION! Esperado(ts=4702,temp=22,seq>=1) -> Recebido(ts=5703,temp=23,seq=83)
+Thread 3: Leitura OK - timestamp: 5703, temp: 23°C, seq: 84
+Thread 1: *** RACE CONDITION! Esperado(ts=3801,temp=21,seq>=1) -> Recebido(ts=5803,temp=22,seq=86)
+Thread 2: *** RACE CONDITION! Esperado(ts=4802,temp=22,seq>=1) -> Recebido(ts=5803,temp=22,seq=86)
+Thread 3: *** RACE CONDITION! Esperado(ts=5803,temp=23,seq>=1) -> Recebido(ts=3901,temp=23,seq=87)
+Thread 1: *** RACE CONDITION! Esperado(ts=3901,temp=21,seq>=1) -> Recebido(ts=4902,temp=22,seq=88)
+Thread 2: Leitura OK - timestamp: 4902, temp: 22°C, seq: 89
+Thread 3: *** RACE CONDITION! Esperado(ts=5903,temp=23,seq>=1) -> Recebido(ts=4001,temp=21,seq=90)
+Thread 1: *** RACE CONDITION! Esperado(ts=4001,temp=21,seq>=1) -> Recebido(ts=5002,temp=21,seq=91)
+Thread 2: *** RACE CONDITION! Esperado(ts=5002,temp=22,seq>=1) -> Recebido(ts=6003,temp=22,seq=92)
+Thread 3: *** RACE CONDITION! Esperado(ts=6003,temp=23,seq>=1) -> Recebido(ts=4101,temp=23,seq=93)
+Thread 1: *** RACE CONDITION! Esperado(ts=4101,temp=21,seq>=1) -> Recebido(ts=5102,temp=22,seq=95)
+Thread 2: Leitura OK - timestamp: 5102, temp: 22°C, seq: 95
+Thread 3: *** RACE CONDITION! Esperado(ts=6103,temp=
 ---- Closed the serial port COM3 ----
 ---- Opened the serial port COM3 ----
 *** Booting Zephyr OS build zephyr-v40200 ***
 
-*** Demonstracao Race Condition - Zephyr RTOS 4.2 - FRDM-KL25Z ***
-3 threads acessando recurso compartilhado SEM sincronizacao
+*** Demo AGRESSIVA: Race Condition - Zephyr RTOS - FRDM-KL25Z ***
+OPERATION_COUNT=50 | Preemptor: sleep=8ms cpu_work=25000 cycles
 
-Thread 1: Inicializando sensor
-Thread 2: Inicializando sensor
-Thread 3: Inicializando sensor
-Thread 1: *** RACE CONDITION! Esperado: 1001, Recebido: 3003
-Thread 2: *** RACE CONDITION! Esperado: 2002, Recebido: 3003
+Thread 1: Inicializando sensor (base=1000)
+Thread 2: Inicializando sensor (base=2000)
+Thread 3: Inicializando sensor (base=3000)
+Thread 1: *** RACE CONDITION! Esperado(ts=1001,temp=21,seq>=1) -> Recebido(ts=3003,temp=23,seq=3)
+Thread 2: *** RACE CONDITION! Esperado(ts=2002,temp=22,seq>=1) -> Recebido(ts=3003,temp=23,seq=3)
 Thread 3: Leitura OK - timestamp: 3003, temp: 23°C, seq: 3
-Thread 1: Leitura OK - timestamp: 1101, temp: 21°C, seq: 4
-Thread 2: *** RACE CONDITION! Esperado: 2102, Recebido: 3103
-Thread 3: Leitura OK - timestamp: 3103, temp: 23°C, seq: 6
-Thread 1: Leitura OK - timestamp: 1201, temp: 21°C, seq: 7
-Thread 2: *** RACE CONDITION! Esperado: 2202, Recebido: 3203
+Thread 1: *** RACE CONDITION! Esperado(ts=1101,temp=21,seq>=1) -> Recebido(ts=2102,temp=22,seq=5)
+Thread 2: *** RACE CONDITION! Esperado(ts=2102,temp=22,seq>=1) -> Recebido(ts=3103,temp=22,seq=5)
+Thread 3: *** RACE CONDITION! Esperado(ts=3103,temp=23,seq>=1) -> Recebido(ts=1201,temp=23,seq=6)
+Thread 1: *** RACE CONDITION! Esperado(ts=1201,temp=21,seq>=1) -> Recebido(ts=2202,temp=21,seq=7)
+Thread 2: *** RACE CONDITION! Esperado(ts=2202,temp=22,seq>=1) -> Recebido(ts=3203,temp=23,seq=8)
 Thread 3: Leitura OK - timestamp: 3203, temp: 23°C, seq: 9
-Thread 1: Leitura OK - timestamp: 1301, temp: 21°C, seq: 10
-Thread 2: *** RACE CONDITION! Esperado: 2302, Recebido: 3303
-Thread 3: Leitura OK - timestamp: 3303, temp: 23°C, seq: 12
-Thread 1: Leitura OK - timestamp: 1401, temp: 21°C, seq: 13
-Thread 2: *** RACE CONDITION! Esperado: 2402, Recebido: 3403
+Thread 1: *** RACE CONDITION! Esperado(ts=1301,temp=21,seq>=1) -> Recebido(ts=2302,temp=22,seq=10)
+Thread 2: *** RACE CONDITION! Esperado(ts=2302,temp=22,seq>=1) -> Recebido(ts=3303,temp=22,seq=11)
+Thread 3: *** RACE CONDITION! Esperado(ts=3303,temp=23,seq>=1) -> Recebido(ts=1401,temp=23,seq=12)
+Thread 1: *** RACE CONDITION! Esperado(ts=1401,temp=21,seq>=1) -> Recebido(ts=2402,temp=21,seq=13)
+Thread 2: *** RACE CONDITION! Esperado(ts=2402,temp=22,seq>=1) -> Recebido(ts=3403,temp=23,seq=15)
 Thread 3: Leitura OK - timestamp: 3403, temp: 23°C, seq: 15
-
-*** Resultado Final ***
-Total de operacoes: 15
-Race conditions detectadas: SIM - SISTEMA INCONSISTENTE!
-*** ALERTA: Dados do sensor corrompidos por race condition! ***
+Thread 1: *** RACE CONDITION! Esperado(ts=1501,temp=21,seq>=1) -> Recebido(ts=3503,temp=22,seq=17)
+Thread 2: *** RACE CONDITION! Esperado(ts=2502,temp=22,seq>=1) -> Recebido(ts=3503,temp=22,seq=17)
+Thread 3: *** RACE CONDITION! Esperado(ts=3503,temp=23,seq>=1) -> Recebido(ts=1601,temp=23,seq=18)
+Thread 1: *** RACE CONDITION! Esperado(ts=1601,temp=21,seq>=1) -> Recebido(ts=3603,temp=21,seq=19)
+Thread 2: *** RACE CONDITION! Esperado(ts=2602,temp=22,seq>=1) -> Recebido(ts=3603,temp=23,seq=21)
+Thread 3: Leitura OK - timestamp: 3603, temp: 23°C, seq: 21
+Thread 1: *** RACE CONDITION! Esperado(ts=1701,temp=21,seq>=1) -> Recebido(ts=3703,temp=22,seq=22)
+Thread 2: *** RACE CONDITION! Esperado(ts=2702,temp=22,seq>=1) -> Recebido(ts=3703,temp=23,seq=23)
+Thread 3: Leitura OK - timestamp: 3703, temp: 23°C, seq: 24
+Thread 1: *** RACE CONDITION! Esperado(ts=1801,temp=21,seq>=1) -> Recebido(ts=3803,temp=22,seq=26)
+Thread 2: *** RACE CONDITION! Esperado(ts=2802,temp=22,seq>=1) -> Recebido(ts=3803,temp=22,seq=26)
+Thread 3: *** RACE CONDITION! Esperado(ts=3803,temp=23,seq>=1) -> Recebido(ts=1901,temp=23,seq=27)
+Thread 1: *** RACE CONDITION! Esperado(ts=1901,temp=21,seq>=1) -> Recebido(ts=2902,temp=22,seq=28)
+Thread 2: Leitura OK - timestamp: 2902, temp: 22°C, seq: 29
+Thread 3: *** RACE CONDITION! Esperado(ts=3903,temp=23,seq>=1) -> Recebido(ts=2001,temp=21,seq=30)
+Thread 1: *** RACE CONDITION! Esperado(ts=2001,temp=21,seq>=1) -> Recebido(ts=3002,temp=21,seq=31)
+Thread 2: *** RACE CONDITION! Esperado(ts=3002,temp=22,seq>=1) -> Recebido(ts=4003,temp=22,seq=32)
+Thread 3: *** RACE CONDITION! Esperado(ts=4003,temp=23,seq>=1) -> Recebido(ts=2101,temp=23,seq=33)
+Thread 1: *** RACE CONDITION! Esperado(ts=2101,temp=21,seq>=1) -> Recebido(ts=3102,temp=22,seq=35)
+Thread 2: Leitura OK - timestamp: 3102, temp: 22°C, seq: 35
+Thread 3: *** RACE CONDITION! Esperado(ts=4103,temp=23,seq>=1) -> Recebido(ts=3202,temp=21,seq=37)
+Thread 1: *** RACE CONDITION! Esperado(ts=2201,temp=21,seq>=1) -> Recebido(ts=3202,temp=21,seq=37)
+Thread 2: *** RACE CONDITION! Esperado(ts=3202,temp=22,seq>=1) -> Recebido(ts=4203,temp=22,seq=38)
+Thread 3: *** RACE CONDITION! Esperado(ts=4203,temp=23,seq>=1) -> Recebido(ts=3302,temp=23,seq=39)
+Thread 1: *** RACE CONDITION! Esperado(ts=2301,temp=21,seq>=1) -> Recebido(ts=3302,temp=22,seq=41)
+Thread 2: Leitura OK - timestamp: 3302, temp: 22°C, seq: 41
+Thread 3: *** RACE CONDITION! Esperado(ts=4303,temp=23,seq>=1) -> Recebido(ts=3402,temp=21,seq=42)
+Thread 1: *** RACE CONDITION! Esperado(ts=2401,temp=21,seq>=1) -> Recebido(ts=3402,temp=22,seq=43)
+Thread 2: Leitura OK - timestamp: 3402, temp: 22°C, seq: 44
+Thread 3: *** RACE CONDITION! Esperado(ts=4403,temp=23,seq>=1) -> Recebido(ts=3502,temp=21,seq=46)
+Thread 1: *** RACE CONDITION! Esperado(ts=2501,temp=21,seq>=1) -> Recebido(ts=3502,temp=21,seq=46)
+Thread 2: *** RACE CONDITION! Esperado(ts=3502,temp=22,seq>=1) -> Recebido(ts=4503,temp=22,seq=47)
+Thread 3: *** RACE CONDITION! Esperado(ts=4503,temp=23,seq>=1) -> Recebido(ts=2601,temp=21,seq=48)
+Thread 1: Leitura OK - timestamp: 2601, temp: 21°C, seq: 49
+Thread 2: *** RACE CONDITION! Esperado(ts=3602,temp=22,seq>=1) -> Recebido(ts=4603,temp=23,seq=50)
+Thread 3: *** RACE CONDITION! Esperado(ts=4603,temp=23,seq>=1) -> Recebido(ts=2701,temp=23,seq=51)
+Thread 1: *** RACE CONDITION! Esperado(ts=2701,temp=21,seq>=1) -> Recebido(ts=3702,temp=21,seq=52)
+Thread 2: *** RACE CONDITION! Esperado(ts=3702,temp=22,seq>=1) -> Recebido(ts=4703,temp=22,seq=53)
+Thread 3: *** RACE CONDITION! Esperado(ts=4703,temp=23,seq>=1) -> Recebido(ts=2801,temp=21,seq=55)
+Thread 1: Leitura OK - timestamp: 2801, temp: 21°C, seq: 55
+Thread 2: *** RACE CONDITION! Esperado(ts=3802,temp=22,seq>=1) -> Recebido(ts=2901,temp=23,seq=57)
+Thread 3: *** RACE CONDITION! Esperado(ts=4803,temp=23,seq>=1) -> Recebido(ts=2901,temp=23,seq=57)
+Thread 1: *** RACE CONDITION! Esperado(ts=2901,temp=21,seq>=1) -> Recebido(ts=3902,temp=21,seq=58)
+Thread 2: *** RACE CONDITION! Esperado(ts=3902,temp=22,seq>=1) -> Recebido(ts=3001,temp=22,seq=59)
+Thread 3: *** RACE CONDITION! Esperado(ts=4903,temp=23,seq>=1) -> Recebido(ts=3001,temp=21,seq=61)
+Thread 1: Leitura OK - timestamp: 3001, temp: 21°C, seq: 61
+Thread 2: *** RACE CONDITION! Esperado(ts=4002,temp=22,seq>=1) -> Recebido(ts=3101,temp=23,seq=63)
+Thread 3: *** RACE CONDITION! Esperado(ts=5003,temp=23,seq>=1) -> Recebido(ts=3101,temp=21,seq=63)
+Thread 1: Leitura OK - timestamp: 3101, temp: 21°C, seq: 64
+Thread 2: *** RACE CONDITION! Esperado(ts=4102,temp=22,seq>=1) -> Recebido(ts=3201,temp=23,seq=66)
+Thread 3: *** RACE CONDITION! Esperado(ts=5103,temp=23,seq>=1) -> Recebido(ts=3201,temp=23,seq=66)
+Thread 1: *** RACE CONDITION! Esperado(ts=3201,temp=21,seq>=1) -> Recebido(ts=4202,temp=21,seq=67)
+Thread 2: *** RACE CONDITION! Esperado(ts=4202,temp=22,seq>=1) -> Recebido(ts=5203,temp=23,seq=68)
+Thread 3: Leitura OK - timestamp: 5203, temp: 23°C, seq: 69
+Thread 1: *** RACE CONDITION! Esperado(ts=3301,temp=21,seq>=1) -> Recebido(ts=4302,temp=22,seq=70)
+Thread 2: *** RACE CONDITION! Esperado(ts=4302,temp=22,seq>=1) -> Recebido(ts=5303,temp=22,seq=71)
+Thread 3: *** RACE CONDITION! Esperado(ts=5303,temp=23,seq>=1) -> Recebido(ts=3401,temp=23,seq=72)
+Thread 1: *** RACE CONDITION! Esperado(ts=3401,temp=21,seq>=1) -> Recebido(ts=4402,temp=21,seq=73)
+Thread 2: *** RACE CONDITION! Esperado(ts=4402,temp=22,seq>=1) -> Recebido(ts=5403,temp=23,seq=75)
+Thread 3: Leitura OK - timestamp: 5403, temp: 23°C, seq: 75
+Thread 1: *** RACE CONDITION! Esperado(ts=3501,temp=21,seq>=1) -> Recebido(ts=5503,temp=22,seq=77)
+Thread 2: *** RACE CONDITION! Esperado(ts=4502,temp=22,seq>=1) -> Recebido(ts=5503,temp=22,seq=77)
+Thread 3: *** RACE CONDITION! Esperado(ts=5503,temp=23,seq>=1) -> Recebido(ts=3601,temp=23,seq=78)
+Thread 1: *** RACE CONDITION! Esperado(ts=3601,temp=21,seq>=1) -> Recebido(ts=5603,temp=21,seq=79)
+Thread 2: *** RACE CONDITION! Esperado(ts=4602,temp=22,seq>=1) -> Recebido(ts=5603,temp=23,seq=81)
+Thread 3: Leitura OK - timestamp: 5603, temp: 23°C, seq: 81
+Thread 1: *** RACE CONDITION! Esperado(ts=3701,temp=21,seq>=1) -> Recebido(ts=5703,temp=22,seq=83)
+Thread 2: *** RACE CONDITION! Esperado(ts=4702,temp=22,seq>=1) -> Recebido(ts=5703,temp=23,seq=83)
+Thread 3: Leitura OK - timestamp: 5703, temp: 23°C, seq: 84
+Thread 1: *** RACE CONDITION! Esperado(ts=3801,temp=21,seq>=1) -> Recebido(ts=5803,temp=22,seq=86)
+Thread 2: *** RACE CONDITION! Esperado(ts=4802,temp=22,seq>=1) -> Recebido(ts=5803,temp=22,seq=86)
+Thread 3: *** RACE CONDITION! Esperado(ts=5803,temp=23,seq>=1) -> Recebido(ts=3901,temp=23,seq=87)
+Thread 1: *** RACE CONDITION! Esperado(ts=3901,temp=21,seq>=1) -> Recebido(ts=4902,temp=22,seq=88)
+Thread 2: Leitura OK - timestamp: 4902, temp: 22��C, seq: 89
+Thread 3: *** RACE CONDITION! Esperado(ts=5903,temp=23,seq>=1) -> Recebido(ts=4001,temp=21,seq=90)
+Thread 1: *** RACE CONDITION! Espera
 ---- Closed the serial port COM3 ----
 ---- Opened the serial port COM3 ----
 *** Booting Zephyr OS build zephyr-v40200 ***
 
-*** Demonstracao Race Condition - Zephyr RTOS 4.2 - FRDM-KL25Z ***
-3 threads acessando recurso compartilhado SEM sincronizacao
+*** Demo AGRESSIVA: Race Condition - Zephyr RTOS - FRDM-KL25Z ***
+OPERATION_COUNT=50 | Preemptor: sleep=8ms cpu_work=25000 cycles
 
-Thread 1: Inicializando sensor
-Thread 2: Inicializando sensor
-Thread 3: Inicializando sensor
-Thread 1: *** RACE CONDITION! Esperado: 1001, Recebido: 3003
-Thread 2: *** RACE CONDITION! Esperado: 2002, Recebido: 3003
+Thread 1: Inicializando sensor (base=1000)
+Thread 2: Inicializando sensor (base=2000)
+Thread 3: Inicializando sensor (base=3000)
+Thread 1: *** RACE CONDITION! Esperado(ts=1001,temp=21,seq>=1) -> Recebido(ts=3003,temp=23,seq=3)
+Thread 2: *** RACE CONDITION! Esperado(ts=2002,temp=22,seq>=1) -> Recebido(ts=3003,temp=23,seq=3)
 Thread 3: Leitura OK - timestamp: 3003, temp: 23°C, seq: 3
-Thread 1: Leitura OK - timestamp: 1101, temp: 21°C, seq: 4
-Thread 2: *** RACE CONDITION! Esperado: 2102, Recebido: 3103
-Thread 3: Leitura OK - timestamp: 3103, temp: 23°C, seq: 6
-Thread 1: Leitura OK - timestamp: 1201, temp: 21°C, seq: 7
-Thread 2: *** RACE CONDITION! Esperado: 2202, Recebido: 3203
+Thread 1: *** RACE CONDITION! Esperado(ts=1101,temp=21,seq>=1) -> Recebido(ts=2102,temp=22,seq=5)
+Thread 2: *** RACE CONDITION! Esperado(ts=2102,temp=22,seq>=1) -> Recebido(ts=3103,temp=22,seq=5)
+Thread 3: *** RACE CONDITION! Esperado(ts=3103,temp=23,seq>=1) -> Recebido(ts=1201,temp=23,seq=6)
+Thread 1: *** RACE CONDITION! Esperado(ts=1201,temp=21,seq>=1) -> Recebido(ts=2202,temp=21,seq=7)
+Thread 2: *** RACE CONDITION! Esperado(ts=2202,temp=22,seq>=1) -> Recebido(ts=3203,temp=23,seq=8)
 Thread 3: Leitura OK - timestamp: 3203, temp: 23°C, seq: 9
-Thread 1: Leitura OK - timestamp: 1301, temp: 21°C, seq: 10
-Thread 2: *** RACE CONDITION! Esperado: 2302, Recebido: 3303
-Thread 3: Leitura OK - timestamp: 3303, temp: 23°C, seq: 12
-Thread 1: Leitura OK - timestamp: 1401, temp: 21��C, seq: 13
-Thread 2: *** RACE CONDITION! Esperado: 2402, Recebido: 3403
-Thread 3: Leitura OK - timestamp: 3403, temp: 23��C, seq: 15
+Thread 1: *** RACE CONDITION! Esperado(ts=1301,temp=21,seq>=1) -> Recebido(ts=2302,temp=22,seq=10)
+Thread 2: *** RACE CONDITION! Esperado(ts=2302,temp=22,seq>=1) -> Recebido(ts=3303,temp=22,seq=11)
+Thread 3: *** RACE CONDITION! Esperado(ts=3303,temp=23,seq>=1) -> Recebido(ts=1401,temp=23,seq=12)
+Thread 1: *** RACE CONDITION! Esperado(ts=1401,temp=21,seq>=1) -> Recebido(ts=2402,temp=21,seq=13)
+Thread 2: *** RACE CONDITION! Esperado(ts=2402,temp=22,seq>=1) -> Recebido(ts=3403,temp=23,seq=15)
+Thread 3: Leitura OK - timestamp: 3403, temp: 23°C, seq: 15
+Thread 1: *** RACE CONDITION! Esperado(ts=1501,temp=21,seq>=1) -> Recebido(ts=3503,temp=22,seq=17)
+Thread 2: *** RACE CONDITION! Esperado(ts=2502,temp=22,seq>=1) -> Recebido(ts=3503,temp=22,seq=17)
+Thread 3: *** RACE CONDITION! Esperado(ts=3503,temp=23,seq>=1) -> Recebido(ts=1601,temp=23,seq=18)
+Thread 1: *** RACE CONDITION! Esperado(ts=1601,temp=21,seq>=1) -> Recebido(ts=3603,temp=21,seq=19)
+Thread 2: *** RACE CONDITION! Esperado(ts=2602,temp=22,seq>=1) -> Recebido(ts=3603,temp=23,seq=21)
+Thread 3: Leitura OK - timestamp: 3603, temp: 23°C, seq: 21
+Thread 1: *** RACE CONDITION! Esperado(ts=1701,temp=21,seq>=1) -> Recebido(ts=3703,temp=22,seq=22)
+Thread 2: *** RACE CONDITION! Esperado(ts=2702,temp=22,seq>=1) -> Recebido(ts=3703,temp=23,seq=23)
+Thread 3: Leitura OK - timestamp: 3703, temp: 23°C, seq: 24
+Thread 1: *** RACE CONDITION! Esperado(ts=1801,temp=21,seq>=1) -> Recebido(ts=3803,temp=22,seq=26)
+Thread 2: *** RACE CONDITION! Esperado(ts=2802,temp=22,seq>=1) -> Recebido(ts=3803,temp=22,seq=26)
+Thread 3: *** RACE CONDITION! Esperado(ts=3803,temp=23,seq>=1) -> Recebido(ts=1901,temp=23,seq=27)
+Thread 1: *** RACE CONDITION! Esperado(ts=1901,temp=21,seq>=1) -> Recebido(ts=2902,temp=22,seq=28)
+Thread 2: Leitura OK - timestamp: 2902, temp: 22°C, seq: 29
+Thread 3: *** RACE CONDITION! Esperado(ts=3903,temp=23,seq>=1) -> Recebido(ts=2001,temp=21,seq=30)
+Thread 1: *** RACE CONDITION! Esperado(ts=2001,temp=21,seq>=1) -> Recebido(ts=3002,temp=21,seq=31)
+Thread 2: *** RACE CONDITION! Esperado(ts=3002,temp=22,seq>=1) -> Recebido(ts=4003,temp=22,seq=32)
+Thread 3: *** RACE CONDITION! Esperado(ts=4003,temp=23,seq>=1) -> Recebido(ts=2101,temp=23,seq=33)
+Thread 1: *** RACE CONDITION! Esperado(ts=2101,temp=21,seq>=1) -> Recebido(ts=3102,temp=22,seq=35)
+Thread 2: Leitura OK - timestamp: 3102, temp: 22°C, seq: 35
+Thread 3: *** RACE CONDITION! Esperado(ts=4103,temp=23,seq>=1) -> Recebido(ts=3202,temp=21,seq=37)
+Thread 1: *** RACE CONDITION! Esperado(ts=2201,temp=21,seq>=1) -> Recebido(ts=3202,temp=21,seq=37)
+Thread 2: *** RACE CONDITION! Esperado(ts=3202,temp=22,seq>=1) -> Recebido(ts=4203,temp=22,seq=38)
+Thread 3: *** RACE CONDITION! Esperado(ts=4203,temp=23,seq>=1) -> Recebido(ts=3302,temp=23,seq=39)
+Thread 1: *** RACE CONDITION! Esperado(ts=2301,temp=21,seq>=1) -> Recebido(ts=3302,temp=22,seq=41)
+Thread 2: Leitura OK - timestamp: 3302, temp: 22��C, seq: 41
+Thread 3: *** RACE CONDITION! Esperado(ts=4303,temp=23,seq>=1) -> Recebido(ts=3402,temp=21,seq=42)
+Thread 1: *** RACE CONDITION! Esperado(ts=2401,temp=21,seq>=1) -> Recebido(ts=3402,temp=22,seq=43)
+Thread 2: Leitura OK - timestamp: 3402, temp: 22°C, seq: 44
+Thread 3: *** RACE CONDITION! Esperado(ts=4403,temp=23,seq>=1) -> Recebido(ts=3502,temp=21,seq=46)
+Thread 1: *** RACE CONDITION! Esperado(ts=2501,temp=21,seq>=1) -> Recebido(ts=3502,temp=21,seq=46)
+Thread 2: *** RACE CONDITION! Esperado(ts=3502,temp=22,seq>=1) -> Recebido(ts=4503,temp=22,seq=47)
+Thread 3: *** RACE CONDITION! Esperado(ts=4503,temp=23,seq>=1) -> Recebido(ts=2601,temp=21,seq=48)
+Thread 1: Leitura OK - timestamp: 2601, temp: 21°C, seq: 49
+Thread 2: *** RACE CONDITION! Esperado(ts=3602,temp=22,seq>=1) -> Recebido(ts=4603,temp=23,seq=50)
+Thread 3: *** RACE CONDITION! Esperado(ts=4603,temp=23,seq>=1) -> Recebido(ts=2701,temp=23,seq=51)
+Thread 1: *** RACE CONDITION! Esperado(ts=2701,temp=21,seq>=1) -> Recebido(ts=3702,temp=21,seq=52)
+Thread 2: *** RACE CONDITION! Esperado(ts=3702,temp=22,seq>=1) -> Recebido(ts=4703,temp=22,seq=53)
+Thread 3: *** RACE CONDITION! Esperado(ts=4703,temp=23,seq>=1) -> Recebido(ts=2801,temp=21,seq=55)
+Thread 1: Leitura OK - timestamp: 2801, temp: 21°C, seq: 55
+Thread 2: *** RACE CONDITION! Esperado(ts=3802,temp=22,seq>=1) -> Recebido(ts=2901,temp=23,seq=57)
+Thread 3: *** RACE CONDITION! Esperado(ts=4803,temp=23,seq>=1) -> Recebido(ts=2901,temp=23,seq=57)
+Thread 1: *** RACE CONDITION! Esperado(ts=2901,temp=21,seq>=1) -> Recebido(ts=3902,temp=21,seq=58)
+Thread 2: *** RACE CONDITION! Esperado(ts=3902,temp=22,seq>=1) -> Recebido(ts=3001,temp=22,seq=59)
+Thread 3: *** RACE CONDITION! Esperado(ts=4903,temp=23,seq>=1) -> Recebido(ts=3001,temp=21,seq=61)
+Thread 1: Leitura OK - timestamp: 3001, temp: 21°C, seq: 61
+Thread 2: *** RACE CONDITION! Esperado(ts=4002,temp=22,seq>=1) -> Recebido(ts=3101,temp=23,seq=63)
+Thread 3: *** RACE CONDITION! Esperado(ts=5003,temp=23,seq>=1) -> Recebido(ts=3101,temp=21,seq=63)
+Thread 1: Leitura OK - timestamp: 3101, temp: 21°C, seq: 64
+Thread 2: *** RACE CONDITION! Esperado(ts=4102,temp=22,seq>=1) -> Recebido(ts=3201,temp=23,seq=66)
+Thread 3: *** RACE CONDITION! Esperado(ts=5103,temp=23,seq>=1) -> Recebido(ts=3201,temp=23,seq=66)
+Thread 1: *** RACE CONDITION! Esperado(ts=3201,temp=21,seq>=1) -> Recebido(ts=4202,temp=21,seq=67)
+Thread 2: *** RACE CONDITION! Esperado(ts=4202,temp=22,seq>=1) -> Recebido(ts=5203,temp=23,seq=68)
+Thread 3: Leitura OK - timestamp: 5203, temp: 23°C, seq: 69
+Thread 1: *** RACE CONDITION! Esperado(ts=3301,temp=21,seq>=1) -> Recebido(ts=4302,temp=22,seq=70)
+Thread 2: *** RACE CONDITION! Esperado(ts=4302,temp=22,seq>=1) -> Recebido(ts=5303,temp=22,seq=71)
+Thread 3: *** RACE CONDITION! Esperado(ts=5303,temp=23,seq>=1) -> Recebido(ts=3401,temp=23,seq=72)
+Thread 1: *** RACE CONDITION! Esperado(ts=3401,temp=21,seq>=1) -> Recebido(ts=4402,temp=21,seq=73)
+Thread 2: *** RACE CONDITION! Esperado(ts=4402,temp=22,seq>=1) -> Recebido(ts=5403,temp=23,seq=75)
+Thread 3: Leitura OK - timestamp: 5403, temp: 23°C, seq: 75
+Thread 1: *** RACE CONDITION! Esperado(ts=3501,temp=21,seq>=1) -> Recebido(ts=5503,temp=22,seq=77)
+Thread 2: *** RACE CONDITION! Esperado(ts=4502,temp=22,seq>=1) -> Recebido(ts=5503,temp=22,seq=77)
+Thread 3: *** RACE CONDITION! Esperado(ts=5503,temp=23,seq>=1) -> Recebido(ts=3601,temp=23,seq=78)
+Thread 1: *** RACE CONDITION! Esperado(ts=3601,temp=21,seq>=1) -> Recebido(ts=5603,temp=21,seq=79)
+Thread 2: *** RACE CONDITION! Esperado(ts=4602,temp=22,seq>=1) -> Recebido(ts=5603,temp=23,seq=81)
+Thread 3: Leitura OK - timestamp: 5603, temp: 23°C, seq: 81
+Thread 1: *** RACE CONDITION! Esperado(ts=3701,temp=21,seq>=1) -> Recebido(ts=5703,temp=22,seq=83)
+Thread 2: *** RACE CONDITION! Esperado(ts=4702,temp=22,seq>=1) -> Recebido(ts=5703,temp=23,seq=83)
+Thread 3: Leitura OK - timestamp: 5703, temp: 23°C, seq: 84
+Thread 1: *** RACE CONDITION! Esperado(ts=3801,temp=21,seq>=1) -> Recebido(ts=5803,temp=22,seq=86)
+Thread 2: *** RACE CONDITION! Esperado(ts=4802,temp=22,seq>=1) -> Recebido(ts=5803,temp=22,seq=86)
+Thread 3: *** RACE CONDITION! Esperado(ts=5803,temp=23,seq>=1) -> Recebido(ts=3901,temp=23,seq=87)
+Thread 1: *** RACE CONDITION! Esperado(ts=3901,temp=21,seq>=1) -> Recebido(ts=4902,temp=22,seq=88)
+Thread 2: Leitura OK - timestamp: 4902, temp: 22°C, seq: 89
+Thread 3: *** RACE CONDITION! Esperado(ts=5903,temp=23,seq>=1) -> Recebido(ts=4001,temp=21,seq=90)
+Thread 1: *** RACE CONDITION! Esperado(ts=4001,temp=21,seq>=1) -> Recebido(ts=5002,temp=21,seq=91)
+Thread 2: *** RACE CONDITION! Esperado(ts=5002,temp=22,seq>=1) -> Recebido(ts=6003,temp=22,seq=92)
+Thread 3: *** RACE CONDITION! Esperado(ts=6003,temp=23,seq>=1) -> Recebido(ts=4101,temp=23,seq=93)
+Thread 1: *** RACE CONDITION! Esperado(ts=4101,temp=21,seq>=1) -> Recebido(ts=5102,temp=22,seq=95)
+Thread 2: Leitura OK - timestamp: 5102, temp: 22°C, seq: 95
+Thread 3: *** RACE CONDITION! Esperado(ts=6103,temp=23,seq>=1) -> Recebido(ts=5202,temp=21,seq=97)
+Thread 1: *** RACE CONDITION! Esperado(ts=4201,temp=21,seq>=1) -> Recebido(ts=5202,temp=21,seq=97)
+Thread 2: *** RACE CONDITION! Esperado(ts=5202,temp=22,seq>=1) -> Recebido(ts=6203,temp=22,seq=98)
+Thread 3: *** RACE CONDITION! Esperado(ts=6203,temp=23,seq>=1) -> Recebido(ts=5302,temp=23,seq=99)
+Thread 1: *** RACE CONDITION! Esperado(ts=4301,temp=21,seq>=1) -> Recebido(ts=5302,temp=22,seq=101)
+Thread 2: Leitura OK - timestamp: 5302, temp: 22°C, seq: 101
 
-*** Resultado Final ***
-Total de operacoes: 15
-Race conditions detectadas: SIM - SISTEMA INCONSISTENTE!
-*** ALERTA: Dados do sensor corrompidos por race condition! ***
+---- Closed the serial port COM3 ----
+---- Opened the serial port COM3 ----
+*** Booting Zephyr OS build zephyr-v40200 ***
+
+*** Demo AGRESSIVA: Race Condition - Zephyr RTOS - FRDM-KL25Z ***
+OPERATION_COUNT=50 | Preemptor: sleep=8ms cpu_work=25000 cycles
+
+Thread 1: Inicializando sensor (base=1000)
+Thread 2: Inicializando sensor (base=2000)
+Thread 3: Inicializando sensor (base=3000)
+Thread 1: *** RACE CONDITION! Esperado(ts=1001,temp=21,seq>=1) -> Recebido(ts=3003,temp=23,seq=3)
+Thread 2: *** RACE CONDITION! Esperado(ts=2002,temp=22,seq>=1) -> Recebido(ts=3003,temp=23,seq=3)
+Thread 3: Leitura OK - timestamp: 3003, temp: 23°C, seq: 3
+Thread 1: *** RACE CONDITION! Esperado(ts=1101,temp=21,seq>=1) -> Recebido(ts=2102,temp=22,seq=5)
+Thread 2: *** RACE CONDITION! Esperado(ts=2102,temp=22,seq>=1) -> Recebido(ts=3103,temp=22,seq=5)
+Thread 3: *** RACE CONDITION! Esperado(ts=3103,temp=23,seq>=1) -> Recebido(ts=1201,temp=23,seq=6)
+Thread 1: *** RACE CONDITION! Esperado(ts=1201,temp=21,seq>=1) -> Recebido(ts=2202,temp=21,seq=7)
+Thread 2: *** RACE CONDITION! Esperado(ts=2202,temp=22,seq>=1) -> Recebido(ts=3203,temp=23,seq=8)
+Thread 3: Leitura OK - timestamp: 3203, temp: 23°C, seq: 9
+Thread 1: *** RACE CONDITION! Esperado(ts=1301,temp=21,seq>=1) -> Recebido(ts=2302,temp=22,seq=10)
+Thread 2: *** RACE CONDITION! Esperado(ts=2302,temp=22,seq>=1) -> Recebido(ts=3303,temp=22,seq=11)
+Thread 3: *** RACE CONDITION! Esperado(ts=3303,temp=23,seq>=1) -> Recebido(ts=1401,temp=23,seq=12)
+Thread 1: *** RACE CONDITION! Esperado(ts=1401,temp=21,seq>=1) -> Recebido(ts=2402,temp=21,seq=13)
+Thread 2: *** RACE CONDITION! Esperado(ts=2402,temp=22,seq>=1) -> Recebido(ts=3403,temp=23,seq=15)
+Thread 3: Leitura OK - timestamp: 3403, temp: 23��C, seq: 15
+Thread 1: *** RACE CONDITION! Esperado(ts=1501,temp=21,seq>=1) -> Recebido(ts=3503,temp=22,seq=17)
+Thread 2: *** RACE CONDITION! Esperado(ts=2502,temp=22,seq>=1) -> Recebido(ts=3503,temp=22,seq=17)
+Thread 3: *** RACE CONDITION! Esperado(ts=3503,temp=23,seq>=1) -> Recebido(ts=1601,temp=23,seq=18)
+Thread 1: *** RACE CONDITION! Esperado(ts=1601,temp=21,seq>=1) -> Recebido(ts=3603,temp=21,seq=19)
+Thread 2: *** RACE CONDITION! Esperado(ts=2602,temp=22,seq>=1) -> Recebido(ts=3603,temp=23,seq=21)
+Thread 3: Leitura OK - timestamp: 3603, temp: 23°C, seq: 21
+Thread 1: *** RACE CONDITION! Esperado(ts=1701,temp=21,seq>=1) -> Recebido(ts=3703,temp=22,seq=22)
+Thread 2: *** RACE CONDITION! Esperado(ts=2702,temp=22,seq>=1) -> Recebido(ts=3703,temp=23,seq=23)
+Thread 3: Leitura OK - timestamp: 3703, temp: 23°C, seq: 24
+Thread 1: *** RACE CONDITION! Esperado(ts=1801,temp=21,seq>=1) -> Recebido(ts=3803,temp=22,seq=26)
+Thread 2: *** RACE CONDITION! Esperado(ts=2802,temp=22,seq>=1) -> Recebido(ts=3803,temp=22,seq=26)
+Thread 3: *** RACE CONDITION! Esperado(ts=3803,temp=23,seq>=1) -> Recebido(ts=1901,temp=23,seq=27)
+Thread 1: *** RACE CONDITION! Esperado(ts=1901,temp=21,seq>=1) -> Recebido(ts=2902,temp=22,seq=28)
+Thread 2: Leitura OK - timestamp: 2902, temp: 22°C, seq: 29
+Thread 3: *** RACE CONDITION! Esperado(ts=3903,temp=23,seq>=1) -> Recebido(ts=2001,temp=21,seq=30)
+Thread 1: *** RACE CONDITION! Esperado(ts=2001,temp=21,seq>=1) -> Recebido(ts=3002,temp=21,seq=31)
+Thread 2: *** RACE CONDITION! Esperado(ts=3002,temp=22,seq>=1) -> Recebido(ts=4003,temp=22,seq=32)
+Thread 3: *** RACE CONDITION! Esperado(ts=4003,temp=23,seq>=1) -> Recebido(ts=2101,temp=23,seq=33)
+Thread 1: *** RACE CONDITION! Esperado(ts=2101,temp=21,seq>=1) -> Recebido(ts=3102,temp=22,seq=35)
+Thread 2: Leitura OK - timestamp: 3102, temp: 22°C, seq: 35
+Thread 3: *** RACE CONDITION! Esperado(ts=4103,temp=23,seq>=1) -> Recebido(ts=3202,temp=21,seq=37)
+Thread 1: *** RACE CONDITION! Esperado(ts=2201,temp=21,seq>=1) -> Recebido(ts=3202,temp=21,seq=37)
+Thread 2: *** RACE CONDITION! Esperado(ts=3202,temp=22,seq>=1) -> Recebido(ts=4203,temp=22,seq=38)
+Thread 3: *** RACE CONDITION! Esperado(ts=4203,temp=23,seq>=1) -> Recebido(ts=3302,temp=23,seq=39)
+Thread 1: *** RACE CONDITION! Esperado(ts=2301,temp=21,seq>=1) -> Recebido(ts=3302,temp=22,seq=41)
+Thread 2: Leitura OK - timestamp: 3302, temp: 22��C, seq: 41
+Thread 3: *** RACE CONDITION! Esperado(ts=4303,temp=23,seq>=1) -> Recebido(ts=3402,temp=21,seq=42)
+Thread 1: *** RACE CONDITION! Esperado(ts=2401,temp=21,seq>=1) -> Recebido(ts=3402,temp=22,seq=43)
+Thread 2: Leitura OK - timestamp: 3402, temp: 22°C, seq: 44
+Thread 3: *** RACE CONDITION! Esperado(ts=4403,temp=23,seq>=1) -> Recebido(ts=3502,temp=21,seq=46)
+Thread 1: *** RACE CONDITION! Esperado(ts=2501,temp=21,seq>=1) -> Recebido(ts=3502,temp=21,seq=46)
+Thread 2: *** RACE CONDITION! Esperado(ts=3502,temp=22,seq>=1) -> Recebido(ts=4503,temp=22,seq=47)
+Thread 3: *** RACE CONDITION! Esperado(ts=4503,temp=23,seq>=1) -> Recebido(ts=2601,temp=21,seq=48)
+Thread 1: Leitura OK - timestamp: 2601, temp: 21°C, seq: 49
+Thread 2: *** RACE CONDITION! Esperado(ts=3602,temp=22,seq>=1) -> Recebido(ts=4603,temp=23,seq=50)
+Thread 3: *** RACE CONDITION! Esperado(ts=4603,temp=23,seq>=1) -> Recebido(ts=2701,temp=23,seq=51)
+Thread 1: *** RACE CONDITION! Esperado(ts=2701,temp=21,seq>=1) -> Recebido(ts=3702,temp=21,seq=52)
+Thread 2: *** RACE CONDITION! Esperado(ts=3702,temp=22,seq>=1) -> Recebido(ts=4703,temp=22,seq=53)
+Thread 3: *** RACE CONDITION! Esperado(ts=4703,temp=23,seq>=1) -> Recebido(ts=2801,temp=21,seq=55)
+Thread 1: Leitura OK - timestamp: 2801, temp: 21°C, seq: 55
+Thread 2: *** RACE CONDITION! Esperado(ts=3802,temp=22,seq>=1) -> Recebido(ts=2901,temp=23,seq=57)
+Thread 3: *** RACE CONDITION! Esperado(ts=4803,temp=23,seq>=1) -> Recebido(ts=2901,temp=23,seq=57)
+Thread 1: *** RACE CONDITION! Esperado(ts=2901,temp=21,seq>=1) -> Recebido(ts=3902,temp=21,seq=58)
+Thread 2: *** RACE CONDITION! Esperado(ts=3902,temp=22,seq>=1) -> Recebido(ts=3001,temp=22,seq=59)
+Thread 3: *** RACE CONDITION! Esperado(ts=4903,temp=23,seq>=1) -> Recebido(ts=3001,temp=21,seq=61)
+Thread 1: Leitura OK - timestamp: 3001, temp: 21°C, seq: 61
+Thread 2: *** RACE CONDITION! Esperado(ts=4002,temp=22,seq>=1) -> Recebido(ts=3101,temp=23,seq=63)
+Thread 3: *** RACE CONDITION! Esperado(ts=5003,temp=23,seq>=1) -> Recebido(ts=3101,temp=21,seq=63)
+Thread 1: Leitura OK - timestamp: 3101, temp: 21°C, seq: 64
+Thread 2: *** RACE CONDITION! Esperado(ts=4102,temp=22,seq>=1) -> Recebido(ts=3201,temp=23,seq=66)
+Thread 3: *** RACE CONDITION! Esperado(ts=5103,temp=23,seq>=1) -> Recebido(ts=3201,temp=23,seq=66)
+Thread 1: *** RACE CONDITION! Esperado(ts=3201,temp=21,seq>=1) -> Recebido(ts=4202,temp=21,seq=67)
+Thread 2: *** RACE CONDITION! Esperado(ts=4202,temp=22,seq>=1) -> Recebido(ts=5203,temp=23,seq=68)
+Thread 3: Leitura OK - timestamp: 5203, temp: 23°C, seq: 69
+Thread 1: *** RACE CONDITION! Esperado(ts=3301,temp=21,seq>=1) -> Recebido(ts=4302,temp=22,seq=70)
+Thread 2: *** RACE CONDITION! Esperado(ts=4302,temp=22,seq>=1) -> Recebido(ts=5303,temp=22,seq=71)
+Thread 3: *** RACE CONDITION! Esperado(ts=5303,temp=23,seq>=1) -> Recebido(ts=3401,temp=23,seq=72)
+Thread 1: *** RACE CONDITION! Esperado(ts=3401,temp=21,seq>=1) -> Recebido(ts=4402,temp=21,seq=73)
+Thread 2: *** RACE CONDITION! Esperado(ts=4402,temp=22,seq>=1) -> Recebido(ts=5403,temp=23,seq=75)
+Thread 3: Leitura OK - timestamp: 5403, temp: 23°C, seq: 75
+Thread 1: *** RACE CONDITION! Esperado(ts=3501,temp=21,seq>=1) -> Recebido(ts=5503,temp=22,seq=77)
+Thread 2: *** RACE CONDITION! Esperado(ts=4502,temp=22,seq>=1) -> Recebido(ts=5503,temp=22,seq=77)
+Thread 3: *** RACE CONDITION! Esperado(ts=5503,temp=23,seq>=1) -> Recebido(ts=3601,temp=23,seq=78)
+Thread 1: *** RACE CONDITION! Esperado(ts=3601,temp=21,seq>=1) -> Recebido(ts=5603,temp=21,seq=79)
+Thread 2: *** RACE CONDITION! Esperado(ts=4602,temp=22,seq>=1) -> Recebido(ts=5603,temp=23,seq=81)
+Thread 3: Leitura OK - timestamp: 5603, temp: 23°C, seq: 81
+Thread 1: *** RACE CONDITION! Esperado(ts=3701,temp=21,seq>=1) -> Recebido(ts=5703,temp=22,seq=83)
+Thread 2: *** RACE CONDITION! Esperado(ts=4702,temp=22,seq>=1) -> Recebido(ts=5703,temp=23,seq=83)
+Thread 3: Leitura OK - timestamp: 5703, temp: 23°C, seq: 84
+Thread 1: *** RACE CONDITION! Esperado(ts=3801,temp=21,seq>=1) -> Recebido(ts=5803,temp=22,seq=86)
+Thread 2: *** RACE CONDITION! Esperado(ts=4802,temp=22,seq>=1) -> Recebido(ts=5803,temp=22,seq=86)
+Thread 3: *** RACE CONDITION! Esperado(ts=5803,temp=23,seq>=1) -> Recebido(ts=3901,temp=23,seq=87)
+Thread 1: *** RACE CONDITION! Esperado(ts=3901,temp=21,seq>=1) -> Recebido(ts=4902,temp=22,seq=88)
+Thread 2: Leitura OK - timestamp: 4902, temp: 22°C, seq: 89
+Thread 3: *** RACE CONDITION! Esperado(ts=5903,temp=23,seq>=1) -> Recebido(ts=4001,temp=21,seq=90)
+Thread 1: *** RACE CONDITION! Esperado(ts=4001,temp=21,seq>=1) -> Recebido(ts=5002,temp=21,seq=91)
+Thread 2: *** RACE CONDITION! Esperado(ts=5002,temp=22,seq>=1) -> Recebido(ts=6003,temp=22,seq=92)
+Thread 3: *** RACE CONDITION! Esperado(ts=6003,temp=23,seq>=1) -> Recebido(ts=4101,temp=23,seq=93)
+Thread 1: *** RACE CONDITION! Esperado(ts=4101,temp=21,seq>=1) -> Recebido(ts=5102,temp=22,seq=95)
+Thread 2: Leitura OK - timestamp: 5102, temp: 22°C, seq: 95
+Thread 3: *** RACE CONDITION! Esperado(ts=6103,temp=23,seq>=1) -> Recebido(ts=5202,temp=21,seq=97)
+Thread 1: *** RACE CONDITION! Esperado(ts=4201,temp=21,seq>=1) -> Recebido(ts=5202,temp=21,seq=97)
+Thread 2: *** RACE CONDITION! Esperado(ts=5202,temp=22,seq>=1) -> Recebido(ts=6203,temp=22,seq=98)
+---- Closed the serial port COM3 ----
+---- Opened the serial port COM3 ----
+*** Booting Zephyr OS build zephyr-v40200 ***
+
+*** Demo AGRESSIVA: Race Condition - Zephyr RTOS - FRDM-KL25Z ***
+OPERATION_COUNT=50 | Preemptor: sleep=8ms cpu_work=25000 cycles
+
+Thread 1: Inicializando sensor (base=1000)
+Thread 2: Inicializando sensor (base=2000)
+Thread 3: Inicializando sensor (base=3000)
+Thread 1: *** RACE CONDITION! Esperado(ts=1001,temp=21,seq>=1) -> Recebido(ts=3003,temp=23,seq=3)
+Thread 2: *** RACE CONDITION! Esperado(ts=2002,temp=22,seq>=1) -> Recebido(ts=3003,temp=23,seq=3)
+Thread 3: Leitura OK - timestamp: 3003, temp: 23°C, seq: 3
+Thread 1: *** RACE CONDITION! Esperado(ts=1101,temp=21,seq>=1) -> Recebido(ts=2102,temp=22,seq=5)
+Thread 2: *** RACE CONDITION! Esperado(ts=2102,temp=22,seq>=1) -> Recebido(ts=3103,temp=22,seq=5)
+Thread 3: *** RACE CONDITION! Esperado(ts=3103,temp=23,seq>=1) -> Recebido(ts=1201,temp=23,seq=6)
+Thread 1: *** RACE CONDITION! Esperado(ts=1201,temp=21,seq>=1) -> Recebido(ts=2202,temp=21,seq=7)
+Thread 2: *** RACE CONDITION! Esperado(ts=2202,temp=22,seq>=1) -> Recebido(ts=3203,temp=23,seq=8)
+Thread 3: Leitura OK - timestamp: 3203, temp: 23°C, seq: 9
+Thread 1: *** RACE CONDITION! Esperado(ts=1301,temp=21,seq>=1) -> Recebido(ts=2302,temp=22,seq=10)
+Thread 2: *** RACE CONDITION! Esperado(ts=2302,temp=22,seq>=1) -> Recebido(ts=3303,temp=22,seq=11)
+Thread 3: *** RACE CONDITION! Esperado(ts=3303,temp=23,seq>=1) -> Recebido(ts=1401,temp=23,seq=12)
+Thread 1: *** RACE CONDITION! Esperado(ts=1401,temp=21,seq>=1) -> Recebido(ts=2402,temp=21,seq=13)
+Thread 2: *** RACE CONDITION! Esperado(ts=2402,temp=22,seq>=1) -> Recebido(ts=3403,temp=23,seq=15)
+Thread 3: Leitura OK - timestamp: 3403, temp: 23°C, seq: 15
+Thread 1: *** RACE CONDITION! Esperado(ts=1501,temp=21,seq>=1) -> Recebido(ts=3503,temp=22,seq=17)
+Thread 2: *** RACE CONDITION! Esperado(ts=2502,temp=22,seq>=1) -> Recebido(ts=3503,temp=22,seq=17)
+Thread 3: *** RACE CONDITION! Esperado(ts=3503,temp=23,seq>=1) -> Recebido(ts=1601,temp=23,seq=18)
+Thread 1: *** RACE CONDITION! Esperado(ts=1601,temp=21,seq>=1) -> Recebido(ts=3603,temp=21,seq=19)
+Thread 2: *** RACE CONDITION! Esperado(ts=2602,temp=22,seq>=1) -> Recebido(ts=3603,temp=23,seq=21)
+Thread 3: Leitura OK - timestamp: 3603, temp: 23°C, seq: 21
+Thread 1: *** RACE CONDITION! Esperado(ts=1701,temp=21,seq>=1) -> Recebido(ts=3703,temp=22,seq=22)
+Thread 2: *** RACE CONDITION! Esperado(ts=2702,temp=22,seq>=1) -> Recebido(ts=3703,temp=23,seq=23)
+Thread 3: Leitura OK - timestamp: 3703, temp: 23°C, seq: 24
+Thread 1: *** RACE CONDITION! Esperado(ts=1801,temp=21,seq>=1) -> Recebido(ts=3803,temp=22,seq=26)
+Thread 2: *** RACE CONDITION! Esperado(ts=2802,temp=22,seq>=1) -> Recebido(ts=3803,temp=22,seq=26)
+Thread 3: *** RACE CONDITION! Esperado(ts=3803,temp=23,seq>=1) -> Recebido(ts=1901,temp=23,seq=27)
+Thread 1: *** RACE CONDITION! Esperado(ts=1901,temp=21,seq>=1) -> Recebido(ts=2902,temp=22,seq=28)
+Thread 2: Leitura OK - timestamp: 2902, temp: 22°C, seq: 29
+Thread 3: *** RACE CONDITION! Esperado(ts=3903,temp=23,seq>=1) -> Recebido(ts=2001,temp=21,seq=30)
+Thread 1: *** RACE CONDITION! Esperado(ts=2001,temp=21,seq>=1) -> Recebido(ts=3002,temp=21,seq=31)
+Thread 2: *** RACE CONDITION! Esperado(ts=3002,temp=22,seq>=1) -> Recebido(ts=4003,temp=22,seq=32)
+Thread 3: *** RACE CONDITION! Esperado(ts=4003,temp=23,seq>=1) -> Recebido(ts=2101,temp=23,seq=33)
+Thread 1: *** RACE CONDITION! Esperado(ts=2101,temp=21,seq>=1) -> Recebido(ts=3102,temp=22,seq=35)
+Thread 2: Leitura OK - timestamp: 3102, temp: 22°C, seq: 35
+Thread 3: *** RACE CONDITION! Esperado(ts=4103,temp=23,seq>=1) -> Recebido(ts=3202,temp=21,seq=37)
+Thread 1: *** RACE CONDITION! Esperado(ts=2201,temp=21,seq>=1) -> Recebido(ts=3202,temp=21,seq=37)
+Thread 2: *** RACE CONDITION! Esperado(ts=3202,temp=22,seq>=1) -> Recebido(ts=4203,temp=22,seq=38)
+Thread 3: *** RACE CONDITION! Esperado(ts=4203,temp=23,seq>=1) -> Recebido(ts=3302,temp=23,seq=39)
+Thread 1: *** RACE CONDITION! Esperado(ts=2301,temp=21,seq>=1) -> Recebido(ts=3302,temp=22,seq=41)
+Thread 2: Leitura OK - timestamp: 3302, temp: 22°C, seq: 41
+Thread 3: *** RACE CONDITION! Esperado(ts=4303,temp=23,seq>=1) -> Recebido(ts=3402,temp=21,seq=42)
+Thread 1: *** RACE CONDITION! Esperado(ts=2401,temp=21,seq>=1) -> Recebido(ts=3402,temp=22,seq=43)
+Thread 2: Leitura OK - timestamp: 3402, temp: 22°C, seq: 44
+Thread 3: *** RACE CONDITION! Esperado(ts=4403,temp=23,seq>=1) -> Recebido(ts=3502,temp=21,seq=46)
+Thread 1: *** RACE CONDITION! Esperado(ts=2501,temp=21,seq>=1) -> Recebido(ts=3502,temp=21,seq=46)
+Thread 2: *** RACE CONDITION! Esperado(ts=3502,temp=22,seq>=1) -> Recebido(ts=4503,temp=22,seq=47)
+Thread 3: *** RACE CONDITION! Esperado(ts=4503,temp=23,seq>=1) -> Recebido(ts=2601,temp=21,seq=48)
+Thread 1: Leitura OK - timestamp: 2601, temp: 21��C, seq: 49
+Thread 2: *** RACE CONDITION! Esperado(ts=3602,temp=22,seq>=1) -> Recebido(ts=4603,temp=23,seq=50)
+Thread 3: *** RACE CONDITION! Esperado(ts=4603,temp=23,seq>=1) -> Recebido(ts=2701,temp=23,seq=51)
+Thread 1: *** RACE CONDITION! Esperado(ts=2701,temp=21,seq>=1) -> Recebido(ts=3702,temp=21,seq=52)
+Thread 2: *** RACE CONDITION! Esperado(ts=3702,temp=22,seq>=1) -> Recebido(ts=4703,temp=22,seq=53)
+Thread 3: *** RACE CONDITION! Esperado(ts=4703,temp=23,seq>=1) -> Recebido(ts=2801,temp=21,seq=55)
+Thread 1: Leitura OK - timestamp: 2801, temp: 21°C, seq: 55
+Thread 2: *** RACE CONDITION! Esperado(ts=3802,temp=22,seq>=1) -> Recebido(ts=2901,temp=23,seq=57)
+Thread 3: *** RACE CONDITION! Esperado(ts=4803,temp=23,seq>=1) -> Recebido(ts=2901,temp=23,seq=57)
+Thread 1: *** RACE CONDITION! Esperado(ts=2901,temp=21,seq>=1) -> Recebido(ts=3902,temp=21,seq=58)
+Thread 2: *** RACE CONDITION! Esperado(ts=3902,temp=22,seq>=1) -> Recebido(ts=3001,temp=22,seq=59)
+Thread 3: *** RACE CONDITION! Esperado(ts=4903,temp=23,seq>=1) -> Recebido(ts=3001,temp=21,seq=61)
+Thread 1: Leitura OK - timestamp: 3001, temp: 21°C, seq: 61
+Thread 2: *** RACE CONDITION! Esperado(ts=4002,temp=22,seq>=1) -> Recebido(ts=3101,temp=23,seq=63)
+Thread 3: *** RACE CONDITION! Esperado(ts=5003,temp=23,seq>=1) -> Recebido(ts=3101,temp=21,seq=63)
+Thread 1: Leitura OK - timestamp: 3101, temp: 21°C, seq: 64
+Thread 2: *** RACE CONDITION! Esperado(ts=4102,temp=22,seq>=1) -> Recebido(ts=3201,temp=23,seq=66)
+Thread 3: *** RACE CONDITION! Esperado(ts=5103,temp=23,seq>=1) -> Recebido(ts=3201,temp=23,seq=66)
+Thread 1: *** RACE CONDITION! Esperado(ts=3201,temp=21,seq>=1) -> Recebido(ts=4202,temp=21,seq=67)
+Thread 2: *** RACE CONDITION! Esperado(ts=4202,temp=22,seq>=1) -> Recebido(ts=5203,temp=23,seq=68)
+Thread 3: Leitura OK - timestamp: 5203, temp: 23��C, seq: 69
+Thread 1: *** RACE CONDITION! Esperado(ts=3301,temp=21,seq>=1) -> Recebido(ts=4302,temp=22,seq=70)
+Thread 2: *** RACE CONDITION! Esperado(ts=4302,temp=22,seq>=1) -> Recebido(ts=5303,temp=22,seq=71)
+Thread 3: *** RACE CONDITION! Esperado(ts=5303,temp=23,seq>=1) -> Recebido(ts=3401,temp=23,seq=72)
+Thread 1: *** RACE CONDITION! Esperado(ts=3401,temp=21,seq>=1) -> Recebido(ts=4402,temp=21,seq=73)
+Thread 2: *** RACE CONDITION! Esperado(ts=4402,temp=22,seq>=1) -> Recebido(ts=5403,temp=23,seq=75)
+Thread 3: Leitura OK - timestamp: 5403, temp: 23°C, seq: 75
+Thread 1: *** RACE CONDITION! Esperado(ts=3501,temp=21,seq>=1) -> Recebido(ts=5503,temp=22,seq=77)
+Thread 2: *** RACE CONDITION! Esperado(ts=4502,temp=22,seq>=1) -> Recebido(ts=5503,temp=22,seq=77)
+Thread 3: *** RACE CONDITION! Esperado(ts=5503,temp=23,seq>=1) -> Recebido(ts=3601,temp=23,seq=78)
+Thread 1: *** RACE CONDITION! Esperado(ts=3601,temp=21,seq>=1) -> Recebido(ts=5603,temp=21,seq=79)
+Thread 2: *** RACE CONDITION! Esperado(ts=4602,temp=22,seq>=1) -> Recebido(ts=5603,temp=23,seq=81)
+Thread 3: Leitura OK - timestamp: 5603, temp: 23°C, seq: 81
+Thread 1: *** RACE CONDITION! Esperado(ts=3701,temp=21,seq>=1) -> Recebido(ts=5703,temp=22,seq=83)
+Thread 2: *** RACE CONDITION! Esperado(ts=4702,temp=22,seq>=1) -> Recebido(ts=5703,temp=23,seq=83)
+Thread 3: Leitura OK - timestamp: 5703, temp: 23°C, seq: 84
+Thread 1: *** RACE CONDITION! Esperado(ts=3801,temp=21,seq>=1) -> Recebido(ts=5803,temp=22,seq=86)
+Thread 2: *** RACE CONDITION! Esperado(ts=4802,temp=22,seq>=1) -> Recebido(ts=5803,temp=22,seq=86)
+Thread 
+---- Closed the serial port COM3 ----
