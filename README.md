@@ -1,5 +1,13 @@
 
-# **Henrique Santiago** 
+# **Henrique Santiago - 16872729** 
+---
+
+### Grupo:
+* Dimitri Garcia
+* Filipe Cassoli
+* Henrique Santiago
+
+
 ---
 
 # 🧪 Planejamento de Testes – Demonstração Agressiva de Race Condition no Zephyr RTOS
@@ -48,6 +56,7 @@ Os testes demonstram que:
 * A ausência de mecanismos de sincronização como `k_mutex`, `k_spinlock`, atomic APIs ou semáforos leva a **corrupção de dados compartilhados** em ambiente multitarefa.
 * A introdução de uma thread preemptora de alta prioridade gera um cenário ideal para **exposição de race conditions ocultas**.
 * O comportamento **não determinístico** observado nas execuções prova a imprevisibilidade e o risco do acesso concorrente sem proteção.
+
 
 ---
 
@@ -168,7 +177,7 @@ k_mutex_unlock(&sensor_mutex);
 
 ---
 
-## **Avaliação de cada colega**
+## **Avaliação do Dimitri**
 
 A ser realizado
 
