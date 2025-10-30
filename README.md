@@ -179,7 +179,7 @@ k_mutex_unlock(&sensor_mutex);
 
 ## **4. Avaliação do Dimitri**
 
-![Serial](imagens_comprovacao/race_condition_serial.png)
+![Serial](imagens_comprovacao/race_condition_serial.PNG)
 A ser realizado
 
 ---
