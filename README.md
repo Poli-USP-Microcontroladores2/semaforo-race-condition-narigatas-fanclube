@@ -177,9 +177,88 @@ k_mutex_unlock(&sensor_mutex);
 
 ---
 
-## **4. Avaliação do Dimitri**
+# **4. Avaliação Dimitri**
 
-![Serial](./imagens_comprovacao/foto_led.jpeg)
-A ser realizado
+---
+
+## ✅ **1. O que estava errado antes (Código Original)**
+
+O código original apresentava vários problemas que caracterizam uma *race condition* e más práticas de concorrência:
+
+### **Problema central: ausência de sincronização**
+
+* A variável global `shared_counter` era acessada simultaneamente por duas threads **sem nenhum mecanismo de proteção**.
+* Cada thread:
+
+  1. Lia o valor atual
+  2. Dormia (permitindo preempção)
+  3. Escrevia o valor de volta
+
+Isso permitia que duas threads lessem o mesmo valor antes da atualização, resultando em **perda de incrementos** — comportamento típico de condição de corrida.
+
+### **Outros problemas do código original:**
+
+| Categoria           | Problema encontrado                                                                                                    |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Concorrência        | A seção crítica era interrompível devido ao `k_msleep()` e ao uso de loop artificial consumindo CPU.                   |
+| Estrutura do código | Mistura de declarações duplicadas de threads (`thread_A` e `thread_a`, mesma coisa para B), causando confusão e erros. |
+| Legibilidade        | Sequência lógica confusa, trechos duplicados, LEDs misturados com lógica crítica.                                      |
+| Estabilidade        | Resultado imprevisível do contador em cada execução. Não determinístico.                                               |
+
+---
+
+## 🛠 **2. O que mudou com a correção (Código Corrigido)**
+
+O código corrigido adicionou sincronização e reorganizou a lógica.
+
+### **Mudanças principais:**
+
+| Antes                                           | Depois                                                    |
+| ----------------------------------------------- | --------------------------------------------------------- |
+| Acesso direto à variável compartilhada          | Uso de `k_mutex_lock()` e `k_mutex_unlock()`              |
+| Função insegura `unsafe_increment()`            | Função thread-safe `safe_increment()`                     |
+| Código com seções críticas expostas a preempção | Seção crítica protegida dentro do mutex                   |
+| Duplicidade e confusão nas threads              | Código limpo, organizado e com duas threads bem definidas |
+| Incremento podendo perder valor                 | Incremento garantido e sequencial sem perda               |
+
+### **Efeito da correção**
+
+* O mutex garante que **apenas uma thread por vez** executa a leitura, modificação e escrita da variável global.
+* Mesmo com `k_msleep(50)` dentro da função, o valor não é corrompido — o mutex impede preempção dentro da seção crítica.
+* O incremento passa a ser **determinístico**.
+
+---
+
+## 📌 **3. O comportamento agora é estável?**
+
+Sim — o comportamento agora é **estável, determinístico e correto**.
+
+### **Por que?**
+
+* `k_mutex_lock()` garante exclusão mútua
+* Nenhuma thread pode invadir a seção crítica da outra
+* Não há mais risco de *race condition*
+
+### **Como o sistema se comporta agora?**
+
+* O contador aumenta exatamente em +1 a cada chamada da função, independente de prioridade ou ordem das threads.
+* A saída do log mostra sempre incrementos consistentes: A: 0 → 1, B: 1 → 2, A: 2 → 3…
+
+### Resultado:
+
+✔ **Sem perda de incrementos**
+✔ **Sem comportamento imprevisível**
+✔ **Sincronização adequada entre threads**
+
+---
+
+## 📍 **Resumo Final**
+
+| Aspecto               | Antes                    | Depois                |
+| --------------------- | ------------------------ | --------------------- |
+| Segurança de thread   | ❌ Race Condition         | ✅ Protegido com Mutex |
+| Determinismo          | ❌ Não determinístico     | ✅ Determinístico      |
+| Organização do código | ❌ Confuso e duplicado    | ✅ Simples e limpo     |
+| Estabilidade          | ❌ Resultado imprevisível | ✅ Estável e confiável |
 
 ---
